@@ -1,0 +1,20 @@
+name: Feature request
+description: Suggest a focused, testable improvement
+title: "[feature] "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: "Please explain the user task and acceptance test."
+  - type: textarea
+    id: problem
+    attributes:
+      label: User problem
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+    validations:
+      required: true

@@ -1,0 +1,32 @@
+{
+  "purpose": "Example only. FinPilot does not install or launch these servers.",
+  "security": {
+    "mode": "read_only",
+    "allow_arbitrary_shell": false,
+    "allow_unknown_tools": false,
+    "max_response_bytes": 2000000,
+    "timeout_seconds": 20
+  },
+  "servers": {
+    "sec_edgar": {
+      "status": "not_connected",
+      "source_review_required": true,
+      "command": ["<approved-server-command>", "<approved-argument>"],
+      "allowed_tools": ["<discovered-read-only-tool>"],
+      "notes": "Fill only after reviewing the selected server's license, provider terms, schema, rate limit and privacy boundary."
+    },
+    "yahoo_finance": {
+      "status": "not_connected",
+      "source_review_required": true,
+      "command": ["<approved-server-command>", "<approved-argument>"],
+      "allowed_tools": ["<discovered-read-only-tool>"],
+      "notes": "Do not treat a third-party scraper as an official Yahoo data service. Cache and label provider data."
+    }
+  },
+  "normalization": {
+    "required_fields": ["metric", "value", "unit", "effective_at", "source_locator"],
+    "allowed_units": ["USD", "USD_mm", "percent", "shares", "date", "count"],
+    "unknown_units": "reject",
+    "future_records": "exclude_and_record"
+  }
+}

@@ -1,0 +1,27 @@
+name: Bug report
+description: Report a reproducible issue without sharing secrets or private data
+title: "[bug] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: "Do not paste API keys, personal data, client files, or private interview material."
+  - type: input
+    id: command
+    attributes:
+      label: Reproduction command
+      description: "For example: python -m finpilot demo --ticker AAPL --as-of 2025-12-31"
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior and sanitized output
+    validations:
+      required: true
