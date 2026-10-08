@@ -1,0 +1,34 @@
+{
+  "schema_version": "real-case-v1",
+  "case_id": "single-company-filing-quality",
+  "title": "单公司财报披露与利润质量：从原始披露到研究快照",
+  "data_status": "user_snapshot_required",
+  "case_type": "实盘研究练习模板",
+  "historical_window": {
+    "start": null,
+    "end": null,
+    "as_of": null,
+    "date_semantics": "研究者先选择公司、CIK、报告期与披露日，再固定 as_of；不得自动用最新财报替代历史快照"
+  },
+  "source_urls": [
+    "https://www.sec.gov/edgar/sec-api-documentation",
+    "https://www.sec.gov/edgar/search-and-access",
+    "https://www.sec.gov/os/accessing-edgar-data"
+  ],
+  "questions": [
+    "利润增长是否由现金流支持，还是存在一次性项目/营运资本/会计政策影响？",
+    "period_end 和 filed_at 是否被混淆，报告修订是否改变了研究日可见值？",
+    "EPS TTM、经营利润率、FCF 率和债务权益比的单位、期间与计算公式能否逐项复核？"
+  ],
+  "required_csv_fields": {
+    "stocks_csv": ["symbol", "name", "sector", "currency", "price_as_of", "price", "eps_ttm", "revenue_growth", "operating_margin", "fcf_margin", "debt_to_equity", "period_end", "filed_at", "source"],
+    "prices_csv": ["date", "symbol", "adj_close"]
+  },
+  "reproduction": [
+    "选择有权使用的公开披露/用户快照；保存 CIK、accession number、原始链接、提取时间和文件哈希。",
+    "SEC wrapper 只提供 raw companyfacts，不自动判定利润质量或生成 stocks.csv；用户必须人工选择 taxonomy、单位、期间和披露版本。",
+    "给每个输入字段附上公式与来源定位；TTM 不应混用年度、季度和不同币种。",
+    "运行 data doctor 和 research 后，将通过/排除结果与原始披露逐项人工核对。"
+  ],
+  "not_provided": ["公司选择", "精确财务数字", "利润质量结论", "交易建议"]
+}

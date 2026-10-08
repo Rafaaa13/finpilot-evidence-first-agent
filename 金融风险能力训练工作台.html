@@ -1,0 +1,626 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>金融风险能力训练工作台 · N/07 Risk Desk</title>
+<style>
+  :root{
+    --ink:#071521;
+    --ink-2:#0d2231;
+    --paper:#edf2f0;
+    --paper-2:#f7f9f7;
+    --muted:#6b7d84;
+    --line:#cdd8d6;
+    --cyan:#1e9ca7;
+    --cyan-2:#65d5d4;
+    --amber:#d99545;
+    --red:#d26758;
+    --green:#5b9f74;
+    --white:#fff;
+    --shadow:0 18px 45px rgba(7,21,33,.12);
+    --radius:18px;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:Inter,"SF Pro Display","PingFang SC","Microsoft YaHei",Arial,sans-serif;line-height:1.55}
+  button,input,textarea,select{font:inherit}
+  button{cursor:pointer}
+  :focus-visible{outline:3px solid rgba(30,156,167,.44);outline-offset:3px}
+  .app-shell{min-height:100vh;display:grid;grid-template-columns:248px 1fr}
+  .rail{background:var(--ink);color:#eaf3f1;padding:24px 18px;display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow:auto}
+  .brand{padding:8px 10px 28px;border-bottom:1px solid rgba(255,255,255,.12)}
+  .brand-mark{display:flex;gap:10px;align-items:center;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--cyan-2)}
+  .brand-mark i{display:block;width:12px;height:12px;border-radius:50%;background:var(--cyan-2);box-shadow:0 0 0 6px rgba(101,213,212,.13)}
+  .brand h1{font-size:25px;line-height:1.05;margin:13px 0 7px;letter-spacing:-.06em;font-weight:780}
+  .brand p{margin:0;color:#93abb1;font-size:12px;max-width:175px}
+  .nav{padding:24px 0;display:grid;gap:7px}
+  .nav button{border:0;background:transparent;color:#9bb0b6;text-align:left;padding:11px 12px;border-radius:11px;display:flex;gap:10px;align-items:center;font-size:13px;transition:.18s ease}
+  .nav button:hover{background:rgba(255,255,255,.08);color:#fff}
+  .nav button.active{background:#153b49;color:#e8ffff;box-shadow:inset 3px 0 var(--cyan-2)}
+  .nav .idx{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:10px;color:#5c8189;width:22px}
+  .nav button.active .idx{color:var(--cyan-2)}
+  .rail-footer{margin-top:auto;border-top:1px solid rgba(255,255,255,.12);padding:17px 10px 2px;color:#789097;font-size:11px}
+  .rail-footer strong{color:#d9e9e7;display:block;font-size:12px;margin-bottom:4px}
+  .stage{min-width:0;padding:0 42px 70px}
+  .topbar{height:72px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line);gap:18px}
+  .crumb{font-size:12px;color:var(--muted)}
+  .crumb b{color:var(--ink);font-weight:650}
+  .top-actions{display:flex;gap:9px;align-items:center}
+  .btn{border:1px solid var(--line);background:var(--paper-2);color:var(--ink);border-radius:9px;padding:9px 13px;font-size:12px;font-weight:650;transition:.16s ease}
+  .btn:hover{transform:translateY(-1px);border-color:var(--cyan);box-shadow:0 5px 14px rgba(7,21,33,.08)}
+  .btn.primary{background:var(--ink);border-color:var(--ink);color:#eaffff}
+  .btn.teal{background:var(--cyan);border-color:var(--cyan);color:#fff}
+  .btn.ghost{background:transparent}
+  .btn.small{padding:7px 10px;font-size:11px}
+  .hero{margin:28px 0 24px;background:var(--ink);color:white;border-radius:24px;min-height:280px;display:grid;grid-template-columns:1.35fr .65fr;overflow:hidden;position:relative;box-shadow:var(--shadow)}
+  .hero:after{content:"";position:absolute;right:-90px;bottom:-150px;width:440px;height:440px;border:1px solid rgba(101,213,212,.33);border-radius:50%;box-shadow:0 0 0 38px rgba(101,213,212,.05),0 0 0 78px rgba(101,213,212,.03)}
+  .hero-copy{padding:38px 42px;position:relative;z-index:1}
+  .eyebrow{font-size:11px;text-transform:uppercase;letter-spacing:.17em;color:var(--cyan-2);font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+  .hero h2{font-size:clamp(30px,4.5vw,56px);letter-spacing:-.075em;line-height:.98;max-width:720px;margin:17px 0 15px;font-weight:760}
+  .hero h2 span{color:var(--cyan-2)}
+  .hero-copy p{max-width:640px;color:#b9cbcc;margin:0;font-size:14px}
+  .hero-actions{display:flex;gap:9px;margin-top:27px;flex-wrap:wrap}
+  .hero .btn{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.2);color:white}
+  .hero .btn.teal{background:var(--cyan);border-color:var(--cyan)}
+  .hero-readout{padding:34px 33px;display:flex;flex-direction:column;justify-content:flex-end;position:relative;z-index:1;background:linear-gradient(90deg,rgba(9,30,42,.04),rgba(30,156,167,.12))}
+  .readout-label{font-size:11px;color:#83a3a8;letter-spacing:.08em}
+  .readout-number{font-size:70px;line-height:1;margin:8px 0 4px;letter-spacing:-.08em;color:#f6ffff}
+  .readout-number small{font-size:18px;letter-spacing:0;color:#8aaeb4}
+  .progress-line{height:5px;background:#214452;border-radius:8px;overflow:hidden;margin:12px 0}
+  .progress-line i{display:block;height:100%;background:var(--cyan-2);border-radius:8px;width:18%}
+  .readout-note{font-size:12px;color:#b5ccce;max-width:210px}
+  .signal-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);margin:0 0 30px}
+  .signal{background:var(--paper-2);padding:16px 19px;min-height:85px}
+  .signal-label{font-size:11px;color:var(--muted);margin-bottom:6px}
+  .signal-value{font-size:21px;letter-spacing:-.05em;font-weight:750}
+  .signal-value.teal{color:var(--cyan)}
+  .signal-value.amber{color:var(--amber)}
+  .signal-value.green{color:var(--green)}
+  .view{display:none}
+  .view.active{display:block;animation:appear .26s ease-out}
+  @keyframes appear{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+  .view-head{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;margin:0 0 18px}
+  .view-head h3{font-size:28px;line-height:1.05;margin:0;letter-spacing:-.06em}
+  .view-head p{margin:8px 0 0;color:var(--muted);font-size:13px;max-width:670px}
+  .section-label{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--cyan);font-family:ui-monospace,SFMono-Regular,Menlo,monospace;margin:28px 0 10px}
+  .grid-2{display:grid;grid-template-columns:1.08fr .92fr;gap:18px}
+  .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  .panel{background:var(--paper-2);border:1px solid var(--line);border-radius:var(--radius);padding:21px;min-width:0}
+  .panel.dark{background:var(--ink-2);border-color:var(--ink-2);color:white}
+  .panel.flat{border-radius:0}
+  .panel h4{margin:0 0 8px;font-size:16px;letter-spacing:-.03em}
+  .panel p{font-size:12px;color:var(--muted);margin:0 0 13px}
+  .panel.dark p{color:#a9c0c2}
+  .panel-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:14px}
+  .panel-head h4{margin:0}
+  .tag{display:inline-flex;align-items:center;padding:4px 7px;border-radius:5px;background:#e2ece9;color:#30656b;font-size:10px;font-weight:750;white-space:nowrap}
+  .tag.amber{background:#f4eadb;color:#996324}
+  .tag.red{background:#f4e2df;color:#a34538}
+  .tag.dark{background:#1e4a59;color:#8ce7e2}
+  .split{display:flex;justify-content:space-between;align-items:center;gap:15px}
+  .muted{color:var(--muted)}
+  .small-copy{font-size:11px;color:var(--muted)}
+  .big-metric{font-size:34px;font-weight:790;letter-spacing:-.08em;line-height:1.05}
+  .big-metric small{font-size:12px;letter-spacing:0;font-weight:600;color:var(--muted)}
+  .meter{height:8px;border-radius:10px;background:#dfe9e7;overflow:hidden;margin:10px 0 6px}
+  .meter i{display:block;height:100%;background:var(--cyan);border-radius:10px}
+  .meter.amber i{background:var(--amber)}
+  .meter.red i{background:var(--red)}
+  .form-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+  .field{display:grid;gap:6px}
+  .field.full{grid-column:1 / -1}
+  .field label{font-size:11px;color:var(--muted);font-weight:650}
+  .field input,.field select,.field textarea,.sql-editor{width:100%;border:1px solid var(--line);background:#fff;border-radius:8px;padding:10px 11px;color:var(--ink);font-size:12px;min-width:0}
+  .field textarea{min-height:88px;resize:vertical;line-height:1.6}
+  .field input:focus,.field select:focus,.field textarea:focus,.sql-editor:focus{border-color:var(--cyan);outline:3px solid rgba(30,156,167,.12)}
+  .range-row{display:grid;grid-template-columns:1fr 74px;gap:10px;align-items:center}
+  input[type=range]{accent-color:var(--cyan);width:100%}
+  .range-readout{background:#e3eeeb;border-radius:7px;padding:7px;text-align:center;font-size:11px;font-weight:750;color:#2b656b}
+  .table-wrap{overflow:auto;border:1px solid var(--line);border-radius:10px;background:white}
+  table{width:100%;border-collapse:collapse;font-size:11px;min-width:600px}
+  th,td{padding:9px 10px;text-align:left;border-bottom:1px solid #e7eeec;white-space:nowrap}
+  th{background:#edf3f1;color:#597077;font-weight:700;position:sticky;top:0}
+  tr:last-child td{border-bottom:0}
+  .num{text-align:right;font-variant-numeric:tabular-nums}
+  .bar-row{display:grid;grid-template-columns:110px 1fr 60px;gap:10px;align-items:center;margin:9px 0;font-size:11px}
+  .bar-row .bar{height:10px;background:#dfe9e7;border-radius:10px;overflow:hidden}
+  .bar-row .bar i{height:100%;display:block;background:var(--cyan);border-radius:10px}
+  .bar-row .bar i.amber{background:var(--amber)}
+  .bar-row .bar i.red{background:var(--red)}
+  .bar-row strong{text-align:right;font-variant-numeric:tabular-nums}
+  .timeline{display:grid;gap:1px;background:var(--line);border:1px solid var(--line)}
+  .week{display:grid;grid-template-columns:78px 1fr 145px;gap:20px;background:var(--paper-2);padding:18px 19px;align-items:start}
+  .week.done{background:#f0f6f2}
+  .week-no{font-size:11px;color:var(--cyan);font-family:ui-monospace,SFMono-Regular,Menlo,monospace;padding-top:2px}
+  .week h4{margin:0 0 5px;font-size:15px}
+  .week p{margin:0;color:var(--muted);font-size:12px;max-width:680px}
+  .week-output{font-size:11px;color:#547178;border-left:2px solid var(--line);padding-left:12px}
+  .week-output b{display:block;color:var(--ink);margin-bottom:3px}
+  .check{display:inline-flex;align-items:center;gap:7px;font-size:11px;color:var(--muted);cursor:pointer;margin-top:10px}
+  .check input{accent-color:var(--cyan)}
+  .goal-list{display:grid;gap:8px;margin:0;padding:0;list-style:none}
+  .goal-list li{display:flex;gap:9px;align-items:flex-start;font-size:12px;color:#4e656b}
+  .goal-list li:before{content:"";width:7px;height:7px;border-radius:50%;background:var(--cyan);margin-top:6px;flex:none}
+  .callout{border-left:3px solid var(--amber);padding:9px 12px;background:#fbf5ec;color:#76542d;font-size:12px;border-radius:0 8px 8px 0}
+  .callout.teal{border-left-color:var(--cyan);background:#eaf7f5;color:#2b656b}
+  .callout.red{border-left-color:var(--red);background:#fbefed;color:#87483f}
+  .code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;background:#0a1b27;color:#b7eeee;padding:13px;border-radius:9px;font-size:11px;line-height:1.7;overflow:auto;white-space:pre-wrap}
+  .sql-editor{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;min-height:105px;background:#0a1b27;color:#d1f4f0;border-color:#173c4b;line-height:1.55;resize:vertical}
+  .sql-toolbar{display:flex;justify-content:space-between;gap:9px;align-items:center;margin:10px 0;flex-wrap:wrap}
+  .sample-row{display:flex;gap:6px;flex-wrap:wrap}
+  .sample-row button{border:1px solid var(--line);background:#fff;border-radius:6px;padding:6px 8px;color:#4b6870;font-size:10px}
+  .sample-row button:hover{border-color:var(--cyan);color:var(--cyan)}
+  .answer-box{border:1px solid var(--line);border-radius:9px;background:#fff;padding:13px;min-height:120px;font-size:12px;color:#3f5960}
+  .answer-box[contenteditable=true]:empty:before{content:attr(data-placeholder);color:#9aabad}
+  .rubric{display:grid;gap:8px}
+  .rubric-row{display:grid;grid-template-columns:115px 1fr 40px;align-items:center;gap:9px;font-size:11px}
+  .rubric-row input{accent-color:var(--cyan);width:100%}
+  .rubric-row b{text-align:right}
+  .evidence{background:#102a36;color:#d8f4f0;border-radius:12px;padding:17px;font-size:12px;line-height:1.7}
+  .evidence h4{color:var(--cyan-2);margin:0 0 9px;font-size:12px;letter-spacing:.08em}
+  .evidence p{color:#d8f4f0;margin:7px 0}
+  .evidence strong{color:#fff}
+  .project-tabs{display:flex;border-bottom:1px solid var(--line);gap:15px;margin-bottom:17px;overflow:auto}
+  .project-tabs button{border:0;border-bottom:2px solid transparent;background:none;padding:8px 0;color:var(--muted);font-size:12px;white-space:nowrap}
+  .project-tabs button.active{color:var(--ink);border-color:var(--cyan);font-weight:700}
+  .pill-row{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}
+  .pill{border:1px solid var(--line);padding:6px 9px;border-radius:999px;font-size:10px;color:#527078;background:#fff}
+  .pill.active{border-color:var(--cyan);background:#eaf7f5;color:#176872}
+  .empty{padding:30px;text-align:center;color:var(--muted);font-size:12px}
+  .footer-note{margin-top:28px;color:#829398;font-size:11px;text-align:center}
+  .toast{position:fixed;right:24px;bottom:22px;background:var(--ink);color:#e8ffff;padding:11px 15px;border-radius:9px;font-size:12px;box-shadow:var(--shadow);opacity:0;transform:translateY(8px);pointer-events:none;transition:.2s ease;z-index:10}
+  .toast.show{opacity:1;transform:none}
+  .status-dot{width:8px;height:8px;border-radius:50%;background:var(--green);display:inline-block;margin-right:5px}
+  .mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+  .nowrap{white-space:nowrap}
+  .right{text-align:right}
+  @media(max-width:1050px){.app-shell{grid-template-columns:205px 1fr}.stage{padding:0 25px 60px}.hero{grid-template-columns:1fr}.hero-readout{padding:0 40px 33px}.hero:after{display:none}.grid-2{grid-template-columns:1fr}}
+  @media(max-width:760px){.app-shell{display:block}.rail{position:static;height:auto;padding:16px 15px}.brand{padding:5px 9px 14px}.brand h1{font-size:20px;margin:8px 0 4px}.nav{display:flex;overflow:auto;padding:13px 0 3px;gap:5px}.nav button{min-width:max-content;padding:8px 10px;font-size:11px}.nav .idx{display:none}.rail-footer{display:none}.stage{padding:0 14px 45px}.topbar{height:60px}.top-actions .btn:first-child{display:none}.hero{margin-top:18px;border-radius:18px;min-height:0}.hero-copy{padding:28px 23px}.hero h2{font-size:38px}.hero-readout{padding:0 23px 26px}.signal-strip{grid-template-columns:repeat(2,1fr);margin-bottom:21px}.signal{padding:12px 14px}.signal-value{font-size:18px}.view-head{display:block}.view-head .btn{margin-top:12px}.grid-3{grid-template-columns:1fr}.form-grid{grid-template-columns:1fr}.field.full{grid-column:auto}.panel{padding:16px;border-radius:14px}.week{grid-template-columns:1fr;gap:6px}.week-output{border-left:0;border-top:1px solid var(--line);padding:8px 0 0;margin-top:5px}.bar-row{grid-template-columns:90px 1fr 55px}.top-actions{gap:5px}.crumb{font-size:11px}}
+  @media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="app-shell">
+  <aside class="rail">
+    <div class="brand">
+      <div class="brand-mark"><i></i><span>Risk desk / N·07</span></div>
+      <h1>金融能力<br>训练工作台</h1>
+      <p>把学习变成可验证的项目证据，而不是打卡截图。</p>
+    </div>
+    <nav class="nav" aria-label="主导航">
+      <button data-view="dashboard" class="active"><span class="idx">01</span>训练总览</button>
+      <button data-view="roadmap"><span class="idx">02</span>八周路线图</button>
+      <button data-view="risk"><span class="idx">03</span>风险实验室</button>
+      <button data-view="quant"><span class="idx">04</span>金工计算台</button>
+      <button data-view="sql"><span class="idx">05</span>SQL 数据练习</button>
+      <button data-view="project"><span class="idx">06</span>项目证据包</button>
+      <button data-view="interview"><span class="idx">07</span>面试演练</button>
+      <button data-view="local"><span class="idx">08</span>本机练习</button>
+    </nav>
+    <div class="rail-footer">
+      <strong><span class="status-dot"></span>本地运行模式</strong>
+      所有样例数据均为本地生成的合成数据。导出 JSON 后，训练记录可带走。
+    </div>
+  </aside>
+
+  <main class="stage">
+    <header class="topbar">
+      <div class="crumb"><b id="crumbTitle">训练总览</b><span>　/　金融风险与金工能力</span></div>
+      <div class="top-actions">
+        <button class="btn ghost" id="importBtn">导入进度</button>
+        <button class="btn primary" id="exportBtn">导出训练包</button>
+        <input id="importFile" type="file" accept="application/json" hidden />
+      </div>
+    </header>
+
+    <section class="hero" id="hero">
+      <div class="hero-copy">
+        <div class="eyebrow">08-week evidence sprint / 2026·10</div>
+        <h2>从“我学过”到<br><span>“我做过，也能解释”</span></h2>
+        <p>围绕风险管理、金融基础设施、资产负债管理和金融科技岗位，把 Python、SQL、风险计量与面试表达压缩成一条可交付的训练链。</p>
+        <div class="hero-actions">
+          <button class="btn teal" data-jump="risk">开始一次风险实验</button>
+          <button class="btn" data-jump="project">生成我的证据包</button>
+        </div>
+      </div>
+      <div class="hero-readout">
+        <div class="readout-label">当前证据完成度</div>
+        <div class="readout-number" id="heroProgress">18<small>%</small></div>
+        <div class="progress-line"><i id="heroProgressBar"></i></div>
+        <div class="readout-note" id="heroProgressNote">先完成第一组可复现实验，再把结果写进项目叙事。</div>
+      </div>
+    </section>
+
+    <section class="signal-strip" aria-label="训练指标">
+      <div class="signal"><div class="signal-label">已完成训练任务</div><div class="signal-value teal" id="signalTasks">0 / 8</div></div>
+      <div class="signal"><div class="signal-label">风险实验快照</div><div class="signal-value amber" id="signalSnapshots">0</div></div>
+      <div class="signal"><div class="signal-label">项目证据条目</div><div class="signal-value green" id="signalEvidence">0 / 6</div></div>
+      <div class="signal"><div class="signal-label">面试表达评分</div><div class="signal-value" id="signalScore">— / 5</div></div>
+    </section>
+
+    <div id="views">
+      <section class="view active" id="view-dashboard"></section>
+      <section class="view" id="view-roadmap"></section>
+      <section class="view" id="view-risk"></section>
+      <section class="view" id="view-quant"></section>
+      <section class="view" id="view-sql"></section>
+      <section class="view" id="view-project"></section>
+      <section class="view" id="view-interview"></section>
+      <section class="view" id="view-local"></section>
+    </div>
+    <div class="footer-note">训练工具仅用于学习与面试准备，不构成投资、授信或风险管理决策建议。</div>
+  </main>
+</div>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+(function(){
+  'use strict';
+  const $ = (sel, root=document) => root.querySelector(sel);
+  const $$ = (sel, root=document) => [...root.querySelectorAll(sel)];
+  const esc = (value) => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const money = (n, digits=0) => Number(n||0).toLocaleString('zh-CN',{minimumFractionDigits:digits,maximumFractionDigits:digits});
+  const pct = (n, digits=1) => `${(Number(n||0)*100).toFixed(digits)}%`;
+  const num = (n, digits=2) => Number(n||0).toLocaleString('zh-CN',{minimumFractionDigits:digits,maximumFractionDigits:digits});
+  const uid = () => Math.random().toString(36).slice(2,9);
+  let toastTimer;
+  function toast(message){const node=$('#toast');node.textContent=message;node.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>node.classList.remove('show'),2200)}
+  function download(filename, content, type='text/plain;charset=utf-8'){
+    const blob=new Blob([content],{type});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=filename;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),500)
+  }
+
+  const roadmap = [
+    {id:'w1',week:'W01',title:'把风险问题说清楚',desc:'选择一个真实岗位问题：零售贷款组合的预期损失、市场风险预警或流动性压力。写出研究问题、数据字典和口径。',output:'一页问题定义 + 数据字典',skill:'业务理解'},
+    {id:'w2',week:'W02',title:'用 SQL 找到风险分布',desc:'用 loans 数据完成分群、聚合、排序和异常值定位。不要只展示 SQL；要解释每个字段为什么对风险有意义。',output:'5 条 SQL + 3 个发现',skill:'SQL / 数据分析'},
+    {id:'w3',week:'W03',title:'做一套信用风险监测',desc:'计算 PD、LGD、EAD 与 Expected Loss，比较不同客群、年份和风险等级，形成可复核的风险结论。',output:'分群风险表 + EL 解释',skill:'信用风险'},
+    {id:'w4',week:'W04',title:'做压力测试与预警',desc:'改变 PD/LGD 乘数，观察组合损失和集中度如何变化；写清楚情景假设、传导链条和局限性。',output:'压力测试快照 + 预警规则',skill:'压力测试'},
+    {id:'w5',week:'W05',title:'把金工公式变成可解释计算',desc:'完成 Black–Scholes 价格、Greeks 与 Monte Carlo 对照。重点不是公式炫技，而是解释输入、误差、收敛和模型边界。',output:'定价实验记录 + 误差解释',skill:'金融工程'},
+    {id:'w6',week:'W06',title:'像模型验证人一样复核',desc:'做输入检查、基准案例、敏感性分析和异常解释。用“结果—原因—下一步”写一段模型验证结论。',output:'模型验证 checklist',skill:'模型风险'},
+    {id:'w7',week:'W07',title:'把结果做成管理信息',desc:'将风险指标压缩为面向业务负责人的一页简报：当前状态、变化原因、风险阈值、建议动作。',output:'一页风险监测简报',skill:'沟通 / 报告'},
+    {id:'w8',week:'W08',title:'生成面试证据包',desc:'完成 STAR 故事、90 秒口述、两条简历 bullet 和反问问题。只写工作台真实算出来的结果，不夸大、不编造。',output:'项目证据包 + 模拟面试',skill:'面试表达'}
+  ];
+
+  // Deterministic synthetic dataset: intentionally simple, auditable, and offline.
+  function LCG(seed){let s=seed>>>0;return()=>{s=(1664525*s+1013904223)>>>0;return s/4294967296}}
+  const rng=LCG(20261003);
+  const segments=['消费贷','小微企业','按揭','信用卡'];
+  const grades=['A','B','C','D'];
+  const loans=Array.from({length:160},(_,i)=>{
+    const segment=segments[i%segments.length];
+    const grade=grades[Math.floor(rng()*grades.length)];
+    const base={A:.012,B:.028,C:.065,D:.14}[grade];
+    const segAdj={'消费贷':1.08,'小微企业':1.24,'按揭':.68,'信用卡':1.18}[segment];
+    const pd=Math.min(.32,base*segAdj*(.82+rng()*.38));
+    const lgd={A:.28,B:.36,C:.48,D:.62}[grade]*(.86+rng()*.24);
+    const ead=20000+Math.round(rng()*480000);
+    const rate={A:.041,B:.052,C:.069,D:.088}[grade]*(.96+rng()*.09);
+    const dti=.18+rng()*.62;
+    const vintage=2022+Math.floor(rng()*5);
+    const overdue=rng() < pd*.85;
+    return {id:`L${String(i+1).padStart(3,'0')}`,segment,grade,pd,lgd,ead,rate,dti,vintage,overdue,el:pd*lgd*ead};
+  });
+  const marketReturns=Array.from({length:252},()=>{
+    const z=normal();
+    return .00018+.011*z-.00035*(z*z-1);
+  });
+  const prices=(()=>{let p=100;return marketReturns.map(r=>{p*=1+r;return p})})();
+  function normalFrom(random){let u=0,v=0;while(!u)u=random();while(!v)v=random();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v)}
+  function normal(){return normalFrom(rng)}
+  function mean(a){return a.reduce((s,v)=>s+v,0)/(a.length||1)}
+  function sd(a){const m=mean(a);return Math.sqrt(mean(a.map(v=>(v-m)**2)))}
+  function quantile(a,q){const x=[...a].sort((u,v)=>u-v),pos=(x.length-1)*q,lo=Math.floor(pos),hi=Math.ceil(pos);return x[lo]+(x[hi]-x[lo])*(pos-lo)}
+  function maxDrawdown(ps){let peak=ps[0],mdd=0;for(const p of ps){peak=Math.max(peak,p);mdd=Math.min(mdd,p/peak-1)}return mdd}
+  function riskStats(returns=marketReturns, ps=prices){const m=mean(returns),vol=sd(returns)*Math.sqrt(252),var95=-quantile(returns,.05),es=-mean(returns.filter(r=>r<=quantile(returns,.05))),cum=ps[ps.length-1]/ps[0]-1;return{daily:m,vol,var95,es,mdd:maxDrawdown(ps),cum}}
+  function normalCdf(x){return .5*(1+Math.erf(x/Math.sqrt(2)))}
+  // Polyfill for engines without Math.erf.
+  if(!Math.erf){Math.erf=function(x){const s=x<0?-1:1; x=Math.abs(x); const a1=.254829592,a2=-.284496736,a3=1.421413741,a4=-1.453152027,a5=1.061405429,p=.3275911;const t=1/(1+p*x);return s*(1-(((((a5*t+a4)*t+a3)*t+a2)*t+a1)*t*Math.exp(-x*x)));};}
+  function bs(S,K,T,r,sigma,type='call'){
+    if(!(S>0&&K>0&&T>0&&sigma>0))throw new Error('S、K、T 和 sigma 必须为正数');
+    const d1=(Math.log(S/K)+(r+.5*sigma*sigma)*T)/(sigma*Math.sqrt(T)),d2=d1-sigma*Math.sqrt(T),N=normalCdf;
+    const disc=Math.exp(-r*T), call=S*N(d1)-K*disc*N(d2), put=K*disc*N(-d2)-S*N(-d1);
+    const price=type==='call'?call:put;
+    const delta=type==='call'?N(d1):N(d1)-1;
+    const gamma=Math.exp(-.5*d1*d1)/(S*sigma*Math.sqrt(2*Math.PI));
+    const vega=S*Math.exp(-.5*d1*d1)*Math.sqrt(T)/Math.sqrt(2*Math.PI);
+    const theta=type==='call'?(-S*Math.exp(-.5*d1*d1)*sigma/(2*Math.sqrt(2*Math.PI*T))-r*K*disc*N(d2)):(-S*Math.exp(-.5*d1*d1)*sigma/(2*Math.sqrt(2*Math.PI*T))+r*K*disc*N(-d2));
+    return{price,delta,gamma,vega,theta,d1,d2,parity:call-put-(S-K*disc)}
+  }
+  function monteCarlo(S,K,T,r,sigma,type,paths,seed=20261003){
+    if(!(paths>1))throw new Error('Monte Carlo 路径数必须大于 1');
+    const localRng=LCG(seed);let sum=0,sum2=0;
+    for(let i=0;i<paths;i++){const ST=S*Math.exp((r-.5*sigma*sigma)*T+sigma*Math.sqrt(T)*normalFrom(localRng));const payoff=type==='call'?Math.max(ST-K,0):Math.max(K-ST,0);sum+=payoff;sum2+=payoff*payoff}
+    const rawMean=sum/paths,sampleVar=Math.max(0,(sum2-paths*rawMean*rawMean)/(paths-1)),disc=Math.exp(-r*T),v=disc*rawMean,se=disc*Math.sqrt(sampleVar/paths);
+    return{price:v,se,ciLow:v-1.96*se,ciHigh:v+1.96*se,paths,seed}
+  }
+  function portfolioMetrics(pdMult=1,lgdMult=1,segment='全部'){
+    const rows=loans.filter(x=>segment==='全部'||x.segment===segment).map(x=>{const stressPd=Math.min(.99,Math.max(0,x.pd*pdMult)),stressLgd=Math.min(.99,Math.max(0,x.lgd*lgdMult));return{...x,stressPd,stressLgd,stressEl:stressPd*stressLgd*x.ead}});
+    const ead=rows.reduce((s,x)=>s+x.ead,0),el=rows.reduce((s,x)=>s+x.el,0),stressEl=rows.reduce((s,x)=>s+x.stressEl,0),pdW=rows.reduce((s,x)=>s+x.pd*x.ead,0)/(ead||1),lgdW=rows.reduce((s,x)=>s+x.lgd*x.ead,0)/(ead||1),overdue=rows.filter(x=>x.overdue).length/(rows.length||1);
+    const bySeg=segments.map(seg=>{const a=rows.filter(x=>x.segment===seg),ee=a.reduce((s,x)=>s+x.ead,0),eeL=a.reduce((s,x)=>s+x.stressEl,0);return{segment:seg,count:a.length,ead:ee,el:eeL,share:stressEl?eeL/stressEl:0}});
+    return{rows,ead,el,stressEl,pdW,lgdW,overdue,bySeg};
+  }
+
+  const state={
+    view:'dashboard',
+    completed:{},
+    snapshots:[],
+    project:{title:'宏观压力下的零售贷款组合风险监测',question:'在 PD 和 LGD 同时上升的压力情景下，哪类客群对组合预期损失贡献最大？',role:'独立完成：数据清洗、SQL 分群、风险计算、压力测试与管理简报',method:'SQL 分群 + PD/LGD/EAD + Expected Loss + 压力测试 + 敏感性分析',findings:'',limits:'样本为合成数据；PD/LGD 为训练参数，不代表真实机构口径；下一步需要用时间切分和真实违约标签做回测。',next:'补充 vintage 维度的迁徙矩阵，并验证压力因子是否应按客群差异化设定。',evidence:{problem:false,data:false,method:false,result:false,limit:false,story:false}},
+    quant:{S:100,K:100,T:1,r:.035,sigma:.22,type:'call',paths:50000,seed:20261003},
+    risk:{pdMult:1.35,lgdMult:1.2,segment:'全部'},
+    sqlQuery:'SELECT segment, COUNT(*) AS loans, SUM(ead) AS total_ead, AVG(pd) AS avg_pd FROM loans GROUP BY segment ORDER BY total_ead DESC',
+    sqlResult:null,
+    interview:{question:0,answer:'',scores:{problem:3,method:3,result:3,tradeoff:3,communication:3}},
+    local:{completed:[],checks:{},lastRun:null}
+  };
+
+  const questions=[
+    {q:'请你用 90 秒介绍这个风险监测项目。',hint:'先说业务问题，再说你做了什么，最后给结果与局限。'},
+    {q:'为什么用 Expected Loss，而不是只看平均 PD？',hint:'区分概率、损失率和暴露额；解释组合规模和结构差异。'},
+    {q:'如果压力测试结果显示小微企业贡献最高，你会怎么验证？',hint:'从数据质量、分群口径、因子设定、敏感性分析和基准情景回答。'},
+    {q:'你的模型有哪些局限？如果进入团队，下一步怎么改？',hint:'不要只说“数据有限”；具体说标签、时间切分、漂移、校准或外部验证。'},
+    {q:'为什么你适合风险管理/金融科技，而不是继续做泛 AI 产品？',hint:'把金融基础、百度的产品/数据经验和正在补的风险计量能力连起来。'},
+    {q:'Monte Carlo 与 Black–Scholes 结果不一致时，你先查什么？',hint:'检查随机数、路径数、折现、风险中性漂移、payoff 和标准误。'}
+  ];
+
+  function completedCount(){return roadmap.filter(x=>state.completed[x.id]).length}
+  function evidenceCount(){return Object.values(state.project.evidence).filter(Boolean).length}
+  function overallProgress(){return Math.round(((completedCount()/8*.4)+(evidenceCount()/6*.3)+((state.snapshots.length>0?1:0)*.1)+((state.interview.answer.trim()?1:0)*.1)+((state.local?.completed?.length||0)>=2?.1:0))*100)}
+  function updateSignals(){
+    const p=Math.min(100,overallProgress());$('#heroProgress').innerHTML=`${p}<small>%</small>`;$('#heroProgressBar').style.width=`${Math.max(5,p)}%`;
+    $('#heroProgressNote').textContent=p<30?'先完成第一组可复现实验，再把结果写进项目叙事。':p<70?'已经有可展示的工作流；下一步把局限性与验证写扎实。':'证据链已成形；用面试演练把结果讲得短、准、可信。';
+    $('#signalTasks').textContent=`${completedCount()} / ${roadmap.length}`;$('#signalSnapshots').textContent=state.snapshots.length;$('#signalEvidence').textContent=`${evidenceCount()} / 6`;
+    const avg=Object.values(state.interview.scores).reduce((a,b)=>a+b,0)/5;$('#signalScore').textContent=state.interview.answer.trim()?`${avg.toFixed(1)} / 5`:'— / 5';
+  }
+  function setView(view){state.view=view;$$('.view').forEach(v=>v.classList.remove('active'));$(`#view-${view}`).classList.add('active');$$('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.view===view));const title={dashboard:'训练总览',roadmap:'八周路线图',risk:'风险实验室',quant:'金工计算台',sql:'SQL 数据练习',project:'项目证据包',interview:'面试演练',local:'本机练习'}[view];$('#crumbTitle').textContent=title;render();window.scrollTo({top:0,behavior:'smooth'})}
+  function go(data){setView(data)}
+
+  function renderDashboard(){
+    const stats=riskStats();const pm=portfolioMetrics(state.risk.pdMult,state.risk.lgdMult,state.risk.segment);
+    $('#view-dashboard').innerHTML=`
+      <div class="view-head"><div><h3>今天只做一件可验证的事</h3><p>建议顺序：先跑风险实验 → 把一个发现写进证据包 → 用一个面试问题复述。每次训练都要留下“输入、方法、结果、局限”。</p></div><button class="btn teal" data-jump="roadmap">查看本周任务</button></div>
+      <div class="grid-2">
+        <div class="panel dark">
+          <div class="panel-head"><div><div class="eyebrow">Today's risk readout</div><h4 style="font-size:22px;margin-top:7px">组合压力损失 <span style="color:var(--cyan-2)">${money(pm.stressEl)}</span></h4></div><span class="tag dark">${esc(state.risk.segment)}</span></div>
+          <p>当前默认情景：PD × ${state.risk.pdMult.toFixed(2)}，LGD × ${state.risk.lgdMult.toFixed(2)}。这个结果不是答案，而是你下一轮验证的起点。</p>
+          <div class="grid-3" style="margin-top:20px"><div><div class="small-copy" style="color:#8eaaad">EAD</div><div class="big-metric" style="font-size:25px">${money(pm.ead/10000,1)}<small> 万</small></div></div><div><div class="small-copy" style="color:#8eaaad">加权 PD</div><div class="big-metric" style="font-size:25px">${pct(pm.pdW,2)}</div></div><div><div class="small-copy" style="color:#8eaaad">逾期占比</div><div class="big-metric" style="font-size:25px">${pct(pm.overdue,1)}</div></div></div>
+          <div style="margin-top:20px"><button class="btn teal small" data-jump="risk">打开实验室并改情景</button></div>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><div><div class="section-label" style="margin:0 0 6px">Evidence chain</div><h4>证据链缺口</h4></div><span class="tag">${evidenceCount()} / 6</span></div>
+          <p>面试官不只听“我做了分析”，会追问你如何定义问题、验证结果和处理局限。</p>
+          ${evidenceRows()}
+          <div style="margin-top:14px"><button class="btn small" data-jump="project">去补证据</button></div>
+        </div>
+      </div>
+      <div class="section-label">This week / 本周节奏</div>
+      <div class="grid-3">
+        ${roadmap.slice(0,3).map((w,i)=>`<div class="panel"><div class="panel-head"><span class="tag ${i===0?'teal':''}">${w.week}</span><span class="small-copy">${state.completed[w.id]?'已完成':'待完成'}</span></div><h4>${w.title}</h4><p>${w.desc}</p><div class="small-copy"><b>交付：</b>${w.output}</div></div>`).join('')}
+      </div>
+      <div class="section-label">Risk stats / 指标练习</div><div class="grid-3"><div class="panel"><div class="small-copy">年化波动率</div><div class="big-metric" style="font-size:26px">${pct(stats.vol,1)}</div><p>日收益波动 × √252；先确认频率和单位。</p></div><div class="panel"><div class="small-copy">VaR 95%</div><div class="big-metric" style="font-size:26px">${pct(stats.var95,2)}</div><p>历史分位数口径；不是最坏损失。</p></div><div class="panel"><div class="small-copy">最大回撤</div><div class="big-metric" style="font-size:26px;color:var(--red)">${pct(-stats.mdd,1)}</div><p>从历史峰值到随后低点的最大跌幅。</p></div></div>
+      <div class="section-label">岗位映射</div>
+      <div class="panel flat" style="padding:0"><div class="table-wrap" style="border:0"><table><thead><tr><th>目标岗位族</th><th>工作台训练证据</th><th>面试时要说清楚</th></tr></thead><tbody>
+        <tr><td><b>风险管理 / 模型验证</b></td><td>PD/LGD/EAD、压力测试、敏感性分析</td><td>你如何识别输入、假设和模型局限</td></tr>
+        <tr><td><b>金融基础设施 / 数据治理</b></td><td>SQL 分群、数据字典、口径核对</td><td>你如何保证数据可追溯、可复核</td></tr>
+        <tr><td><b>ALM / 固收 / 金融市场</b></td><td>VaR、ES、回撤、Black–Scholes 对照</td><td>你如何解释风险指标而不是只报数字</td></tr>
+        <tr><td><b>金融科技 / 风险产品</b></td><td>需求→指标→监测→管理简报</td><td>你如何把业务问题转成可实现的系统/分析流程</td></tr>
+      </tbody></table></div></div>`;
+  }
+  function evidenceRows(){
+    const rows=[['问题定义','把岗位问题写成可验证假设','problem'],['数据与口径','字段、样本、计算口径可复核','data'],['方法选择','说明为什么用这个风险/金工方法','method'],['结果与动作','给出数字，并说明它改变了什么','result'],['局限与验证','明确不能从合成数据推出什么','limit'],['面试故事','STAR + 90秒口述 + 简历 bullet','story']];
+    return rows.map(([a,b,k])=>`<div class="split" style="padding:8px 0;border-bottom:1px solid #e3ece9"><div style="display:flex;gap:8px;align-items:center"><span style="width:7px;height:7px;border-radius:50%;background:${state.project.evidence[k]?'var(--green)':'var(--line)'}"></span><span style="font-size:12px">${a}</span></div><span class="small-copy">${state.project.evidence[k]?'已留下':'待留下'}</span></div>`).join('')
+  }
+
+  function renderRoadmap(){
+    $('#view-roadmap').innerHTML=`
+      <div class="view-head"><div><h3>八周证据冲刺</h3><p>每周只有一个主要交付物。你可以把它压缩为每周 4—6 小时；如果时间更少，优先完成 W02、W03、W04、W08。</p></div><button class="btn" id="resetRoadmap">重置路线状态</button></div>
+      <div class="callout teal"><b>训练原则：</b>不要把“看完课程”当作完成。完成标准是：别人可以复现你的计算，你可以解释变量和假设，你能指出结果的边界。</div>
+      <div class="timeline" style="margin-top:17px">${roadmap.map(w=>`<div class="week ${state.completed[w.id]?'done':''}"><div class="week-no">${w.week}<br><span style="color:var(--muted)">${state.completed[w.id]?'DONE':'NEXT'}</span></div><div><h4>${w.title}</h4><p>${w.desc}</p><label class="check"><input type="checkbox" data-week="${w.id}" ${state.completed[w.id]?'checked':''}> 我已完成并留下可查看结果</label></div><div class="week-output"><b>本周交付</b>${w.output}<br><span style="color:var(--cyan)">能力：${w.skill}</span></div></div>`).join('')}</div>
+      <div class="section-label">每周验收问题</div>
+      <div class="grid-2"><div class="panel"><h4>不合格的完成方式</h4><ul class="goal-list"><li>只抄公式，不记录输入口径。</li><li>只贴一张图，不解释指标改变了什么决策。</li><li>只写“模型效果很好”，不报告误差和局限。</li><li>只背面试答案，无法现场改一个参数。</li></ul></div><div class="panel"><h4>合格的完成方式</h4><ul class="goal-list"><li>可以导出一份带数据字典的结果。</li><li>可以在工作台里改变一个压力因子并重跑。</li><li>可以说清楚结果对岗位工作有什么意义。</li><li>可以把真实结果转成一条克制的简历 bullet。</li></ul></div></div>`;
+    $$('[data-week]').forEach(x=>x.addEventListener('change',e=>{state.completed[e.target.dataset.week]=e.target.checked;updateSignals();renderRoadmap();renderDashboard();toast(e.target.checked?'已记录：本周交付完成':'已取消完成标记')}));
+    $('#resetRoadmap').onclick=()=>{if(confirm('确定要清空八周路线的完成状态吗？')){state.completed={};updateSignals();renderRoadmap();renderDashboard();toast('路线状态已重置')}};
+  }
+
+  function renderRisk(){
+    const pm=portfolioMetrics(state.risk.pdMult,state.risk.lgdMult,state.risk.segment);
+    const maxShare=Math.max(...pm.bySeg.map(x=>x.share),.01);
+    $('#view-risk').innerHTML=`
+      <div class="view-head"><div><h3>风险实验室</h3><p>用一份可审计的合成贷款组合，训练风险岗位最常见的闭环：数据口径 → 风险指标 → 压力情景 → 解释与动作。</p></div><button class="btn teal" id="saveRiskSnapshot">保存本次实验快照</button></div>
+      <div class="grid-2">
+        <div class="panel"><div class="panel-head"><div><div class="section-label" style="margin:0 0 6px">Scenario control</div><h4>压力情景控制台</h4></div><span class="tag amber">可复现</span></div>
+          <div class="form-grid"><div class="field"><label>客群</label><select id="riskSegment">${['全部',...segments].map(s=>`<option ${s===state.risk.segment?'selected':''}>${s}</option>`).join('')}</select></div><div class="field"><label>观察维度</label><select id="riskViewDim"><option>Expected Loss</option><option>PD / LGD 分解</option><option>组合集中度</option></select></div><div class="field full"><label>PD 压力乘数 <span class="mono">×${state.risk.pdMult.toFixed(2)}</span></label><div class="range-row"><input id="pdRange" type="range" min="0.8" max="2.5" step="0.05" value="${state.risk.pdMult}"><div class="range-readout" id="pdReadout">×${state.risk.pdMult.toFixed(2)}</div></div></div><div class="field full"><label>LGD 压力乘数 <span class="mono">×${state.risk.lgdMult.toFixed(2)}</span></label><div class="range-row"><input id="lgdRange" type="range" min="0.8" max="2.2" step="0.05" value="${state.risk.lgdMult}"><div class="range-readout" id="lgdReadout">×${state.risk.lgdMult.toFixed(2)}</div></div></div></div>
+          <div class="callout" style="margin-top:16px"><b>面试提示：</b>压力测试不是把一个数字乘大，而是要说清楚压力因子如何传导到 PD、LGD 和组合损失，以及为什么不同客群不能机械使用同一个因子。</div>
+        </div>
+        <div class="panel dark"><div class="panel-head"><div><div class="eyebrow">Portfolio output</div><h4 style="font-size:21px;margin-top:7px">${state.risk.segment} / 组合读数</h4></div><span class="tag dark">${pm.rows.length} loans</span></div><div class="grid-3"><div><div class="small-copy" style="color:#8eaaad">基准 EL</div><div class="big-metric" style="font-size:24px">${money(pm.el)}</div></div><div><div class="small-copy" style="color:#8eaaad">压力 EL</div><div class="big-metric" style="font-size:24px;color:var(--cyan-2)">${money(pm.stressEl)}</div></div><div><div class="small-copy" style="color:#8eaaad">损失增幅</div><div class="big-metric" style="font-size:24px;color:var(--amber)">${pct(pm.stressEl/(pm.el||1)-1,1)}</div></div></div><div style="margin-top:23px" class="small-copy">加权 PD ${pct(pm.pdW,2)}　·　加权 LGD ${pct(pm.lgdW,1)}　·　EAD ${money(pm.ead/10000,1)} 万</div><div class="progress-line" style="margin-top:18px"><i style="width:${Math.min(100,pm.stressEl/(pm.ead||1)*100*9)}%;background:var(--amber)"></i></div><div class="small-copy" style="color:#a9c0c2">压力损失 / EAD：${pct(pm.stressEl/(pm.ead||1),2)}</div></div>
+      </div>
+      <div class="section-label">Contribution / 损失贡献</div>
+      <div class="grid-2"><div class="panel"><div class="panel-head"><h4>按客群拆解</h4><span class="tag">排序依据：压力 EL</span></div>${pm.bySeg.sort((a,b)=>b.el-a.el).map((x,i)=>`<div class="bar-row"><span>${x.segment}</span><div class="bar"><i class="${i===0?'red':i===1?'amber':''}" style="width:${Math.max(3,x.share/maxShare*100)}%"></i></div><strong>${pct(x.share,1)}</strong></div>`).join('')}<div class="small-copy" style="margin-top:15px">最高贡献客群：<b>${pm.bySeg.slice().sort((a,b)=>b.el-a.el)[0].segment}</b>。下一步不是直接下结论，而是检查样本结构、PD/LGD 口径和压力因子。</div></div><div class="panel"><div class="panel-head"><h4>可复核的字段</h4><span class="tag teal">数据字典</span></div><div class="table-wrap"><table><thead><tr><th>字段</th><th>含义</th><th>为什么重要</th></tr></thead><tbody><tr><td class="mono">pd</td><td>违约概率</td><td>发生风险的概率</td></tr><tr><td class="mono">lgd</td><td>违约损失率</td><td>违约后损失强度</td></tr><tr><td class="mono">ead</td><td>违约风险暴露</td><td>风险规模与集中度</td></tr><tr><td class="mono">dti</td><td>债务收入比</td><td>偿付压力的代理变量</td></tr><tr><td class="mono">vintage</td><td>贷款年份</td><td>观察批次差异与漂移</td></tr></tbody></table></div></div></div>
+      <div class="section-label">Experiment log / 实验记录</div><div class="panel flat" style="padding:0"><div class="table-wrap" style="border:0"><table><thead><tr><th>时间</th><th>情景</th><th>客群</th><th>压力 EL</th><th>损失增幅</th><th>面试解释</th></tr></thead><tbody>${state.snapshots.length?state.snapshots.slice().reverse().map(s=>`<tr><td>${s.time}</td><td>PD × ${s.pdMult.toFixed(2)} / LGD × ${s.lgdMult.toFixed(2)}</td><td>${s.segment}</td><td class="num">${money(s.stressEl)}</td><td class="num">${pct(s.uplift,1)}</td><td>${esc(s.note)}</td></tr>`).join(''):'<tr><td colspan="6" class="empty">还没有实验快照。调一个压力因子并保存，它就会变成你的第一条项目证据。</td></tr>'}</tbody></table></div></div>
+      <div class="section-label">Independent check / 独立验收</div><div class="panel"><p>不要只接受屏幕上的最高贡献客群。请先在纸上或本机复算：每笔压力 EL = min(1, PD × 压力乘数) × min(1, LGD × 压力乘数) × EAD，再与这里的合计对照。</p><label class="check"><input id="riskIndependentCheck" type="checkbox" ${state.local.checks.riskIndependent?'checked':''}> 我已独立复算至少 3 笔并记录差异原因</label></div>`;
+    $('#pdRange').oninput=e=>{state.risk.pdMult=+e.target.value;$('#pdReadout').textContent=`×${state.risk.pdMult.toFixed(2)}`;renderRisk();renderDashboard()};
+    $('#lgdRange').oninput=e=>{state.risk.lgdMult=+e.target.value;$('#lgdReadout').textContent=`×${state.risk.lgdMult.toFixed(2)}`;renderRisk();renderDashboard()};
+    $('#riskSegment').onchange=e=>{state.risk.segment=e.target.value;renderRisk();renderDashboard()};
+    $('#riskIndependentCheck').onchange=e=>{state.local.checks.riskIndependent=e.target.checked;toast(e.target.checked?'已记录独立复算':'已取消独立复算标记')};
+    $('#saveRiskSnapshot').onclick=()=>{const base=portfolioMetrics(1,1,state.risk.segment),now=portfolioMetrics(state.risk.pdMult,state.risk.lgdMult,state.risk.segment);const lead=now.bySeg.slice().sort((a,b)=>b.el-a.el)[0];state.snapshots.push({time:new Date().toLocaleString('zh-CN',{hour12:false}),pdMult:state.risk.pdMult,lgdMult:state.risk.lgdMult,segment:state.risk.segment,stressEl:now.stressEl,uplift:now.stressEl/(base.el||1)-1,note:`${lead.segment}贡献最高；需验证客群口径与压力因子`});state.project.evidence.result=true;renderRisk();renderDashboard();updateSignals();toast('实验快照已保存，并计入项目结果证据')};
+  }
+
+  function sanitizeQuant(){
+    const q=state.quant;
+    q.S=Math.max(0.0001,Number.isFinite(+q.S)?+q.S:100);
+    q.K=Math.max(0.0001,Number.isFinite(+q.K)?+q.K:100);
+    q.T=Math.max(0.0001,Number.isFinite(+q.T)?+q.T:1);
+    q.r=Number.isFinite(+q.r)?+q.r:.035;
+    q.sigma=Math.max(0.0001,Number.isFinite(+q.sigma)?+q.sigma:.22);
+    q.paths=Math.max(2,Math.round(Number.isFinite(+q.paths)?+q.paths:50000));
+    q.seed=Number.isFinite(+q.seed)?Math.trunc(+q.seed):20261003;
+    return q;
+  }
+  function renderQuant(){
+    const q=sanitizeQuant(),a=bs(+q.S,+q.K,+q.T,+q.r,+q.sigma,q.type),mc=monteCarlo(+q.S,+q.K,+q.T,+q.r,+q.sigma,q.type,+q.paths,q.seed),diff=mc.price-a.price;
+    $('#view-quant').innerHTML=`
+      <div class="view-head"><div><h3>金工计算台</h3><p>按金融工程常见的“解析解 + 数值方法 + 误差解释”训练。这里参考了公开量化金融笔记中 Black–Scholes、Monte Carlo、Greeks 等主题，但代码为本工作台独立实现。</p></div><button class="btn teal" id="saveQuantEvidence">保存定价实验</button></div>
+      <div class="grid-2"><div class="panel"><div class="panel-head"><div><div class="section-label" style="margin:0 0 6px">Black–Scholes lab</div><h4>输入参数</h4></div><span class="tag teal">可重跑</span></div><div class="form-grid"><div class="field"><label>现价 S</label><input id="qS" type="number" step="1" value="${q.S}"></div><div class="field"><label>执行价 K</label><input id="qK" type="number" step="1" value="${q.K}"></div><div class="field"><label>到期 T（年）</label><input id="qT" type="number" step=".05" min=".05" value="${q.T}"></div><div class="field"><label>无风险利率 r</label><input id="qR" type="number" step=".005" value="${q.r}"></div><div class="field"><label>波动率 σ</label><input id="qSigma" type="number" step=".01" min=".01" value="${q.sigma}"></div><div class="field"><label>期权类型</label><select id="qType"><option value="call" ${q.type==='call'?'selected':''}>Call</option><option value="put" ${q.type==='put'?'selected':''}>Put</option></select></div><div class="field"><label>Monte Carlo paths</label><select id="qPaths"><option value="10000" ${q.paths===10000?'selected':''}>10,000 · 快速</option><option value="50000" ${q.paths===50000?'selected':''}>50,000 · 平衡</option><option value="150000" ${q.paths===150000?'selected':''}>150,000 · 稳定</option></select></div><div class="field"><label>随机种子</label><input id="qSeed" type="number" step="1" value="${q.seed}"></div></div><div class="small-copy" style="margin-top:11px">固定种子用于复现，不等于证明随机路径独立。请在本机练习中再换一个种子做独立验证。</div><div style="margin-top:14px"><button class="btn teal" id="rerunQuant">重新计算</button></div></div>
+      <div class="panel dark"><div class="panel-head"><div><div class="eyebrow">Pricing comparison</div><h4 style="font-size:21px;margin-top:7px">解析解 vs Monte Carlo</h4></div><span class="tag dark">${q.type.toUpperCase()}</span></div><div class="grid-2" style="gap:10px"><div><div class="small-copy" style="color:#8eaaad">解析价格</div><div class="big-metric" style="font-size:34px;color:var(--cyan-2)">${num(a.price,4)}</div></div><div><div class="small-copy" style="color:#8eaaad">MC 价格</div><div class="big-metric" style="font-size:34px">${num(mc.price,4)}</div></div></div><div class="progress-line" style="margin-top:23px"><i style="width:${Math.min(100,Math.abs(diff)/(Math.max(a.price,.001))*100*20)}%;background:${Math.abs(diff)<mc.se*2?'var(--green)':'var(--amber)'}"></i></div><div class="small-copy" style="color:#a9c0c2">差异 ${num(diff,4)}　·　MC 标准误 ${num(mc.se,4)}　·　95% CI [${num(mc.ciLow,4)}, ${num(mc.ciHigh,4)}]　·　${Math.abs(diff)<mc.se*2?'在约 2 个标准误以内':'建议增加路径或检查实现'}</div><div class="small-copy" style="color:#a9c0c2;margin-top:6px">Put-call parity residual：${num(a.parity,7)}</div><div style="margin-top:18px" class="callout" >面试表达：数值方法不是为了“替代”解析解，而是用于没有简单闭式解的 payoff；先用可验证的基准案例检查实现，再讨论收敛与误差。</div></div></div>
+      <div class="section-label">Greeks / 敏感性</div><div class="grid-3">${[['Delta',a.delta,'价格对 S 的一阶敏感性'],['Gamma',a.gamma,'Delta 对 S 的敏感性'],['Vega',a.vega/100,'价格对波动率的敏感性（每 1%）'],['Theta',a.theta/365,'每日时间损耗'],['d1',a.d1,'中间变量，不直接是风险指标'],['d2',a.d2,'用于到期支付概率表达']].map(([name,val,desc])=>`<div class="panel"><div class="small-copy">${name}</div><div class="big-metric" style="font-size:27px;margin:7px 0">${num(val,5)}</div><p style="margin:0">${desc}</p></div>`).join('')}</div>
+      <div class="section-label">Independent check / 独立验收</div><div class="panel"><p>请独立验证三件事：Put-call parity residual 接近 0；把随机种子换成另一个值后，MC 价格改变但通常仍落在解析价格附近；把路径数提高后，标准误应大致下降。</p><label class="check"><input id="quantIndependentCheck" type="checkbox" ${state.local.checks.quantIndependent?'checked':''}> 我已完成三项独立检查并记录结果</label></div>
+      <div class="section-label">讲给面试官的三句话</div><div class="panel"><div class="grid-3"><div class="callout teal"><b>输入：</b>我明确了 S、K、T、r、σ 和 payoff，而不是直接调用黑箱函数。</div><div class="callout"><b>验证：</b>我用 Black–Scholes 解析解作为基准，再用 Monte Carlo 对照价格和标准误。</div><div class="callout red"><b>边界：</b>结果依赖波动率、风险中性假设和路径数，不能把训练结果当成交易建议。</div></div></div>`;
+    ['qS','qK','qT','qR','qSigma','qType','qPaths','qSeed'].forEach(id=>{const n=$('#'+id);n.onchange=()=>{if(id==='qS')q.S=+n.value;if(id==='qK')q.K=+n.value;if(id==='qT')q.T=+n.value;if(id==='qR')q.r=+n.value;if(id==='qSigma')q.sigma=+n.value;if(id==='qType')q.type=n.value;if(id==='qPaths')q.paths=+n.value;if(id==='qSeed')q.seed=+n.value;renderQuant()}});
+    $('#rerunQuant').onclick=()=>{renderQuant();toast('定价实验已重新计算')};
+    $('#quantIndependentCheck').onchange=e=>{state.local.checks.quantIndependent=e.target.checked;toast(e.target.checked?'已记录三项独立检查':'已取消独立检查标记')};
+    $('#saveQuantEvidence').onclick=()=>{state.project.evidence.method=true;state.project.evidence.result=true;state.project.next='把当前定价实验扩展为不同波动率下的敏感性曲线，并报告 Monte Carlo 的标准误。';renderQuant();renderProject();renderDashboard();updateSignals();toast('定价实验已写入项目证据')};
+  }
+
+  function formatCell(v){if(typeof v==='number')return Number.isInteger(v)?money(v):num(v,4);return esc(v)}
+  function tokenizeWhere(expr){return expr.split(/\s+AND\s+/i).map(part=>{const m=part.trim().match(/^([a-zA-Z_]+)\s*(>=|<=|!=|=|>|<)\s*['"]?([^'"]+)['"]?$/);return m?{field:m[1],op:m[2],value:m[3]}:null}).filter(Boolean)}
+  function runSQL(query){
+    const clean=query.replace(/;\s*$/,'').replace(/\s+/g,' ').trim();
+    const m=clean.match(/^SELECT\s+(.+?)\s+FROM\s+loans(?:\s+WHERE\s+(.+?))?(?:\s+GROUP BY\s+([a-zA-Z_]+))?(?:\s+ORDER BY\s+([a-zA-Z_]+)(?:\s+(ASC|DESC))?)?(?:\s+LIMIT\s+(\d+))?$/i);
+    if(!m)throw new Error('当前练习引擎支持：SELECT ... FROM loans，WHERE，GROUP BY，ORDER BY，LIMIT。请先点击一个示例。');
+    let rows=[...loans];
+    if(m[2]){
+      const rules=tokenizeWhere(m[2]);
+      if(!rules.length)throw new Error('WHERE 条件无法解析，请使用 field >= value AND field = value 的形式。');
+      rows=rows.filter(r=>rules.every(x=>{const a=r[x.field],b=isNaN(x.value)?x.value:+x.value;if(a===undefined)throw new Error('未知字段：'+x.field);switch(x.op){case '=':return String(a).toLowerCase()===String(b).toLowerCase();case '!=':return String(a).toLowerCase()!==String(b).toLowerCase();case '>':return a>b;case '<':return a<b;case '>=':return a>=b;case '<=':return a<=b}}));
+    }
+    const select=m[1].split(',').map(s=>s.trim());const group=m[3];const hasAgg=select.some(s=>/^(COUNT|SUM|AVG)\s*\(/i.test(s));let result=[];
+    const available=Object.keys(loans[0]);
+    select.forEach(s=>{const base=s.replace(/\s+AS\s+.*$/i,'').trim();const am=base.match(/^(COUNT|SUM|AVG)\s*\(\s*([a-zA-Z_]+|\*)\s*\)$/i);if(!am&&!available.includes(base)&&base!==group)throw new Error('未知字段或表达式：'+base);if(am&&am[2]!=='*'&&!available.includes(am[2]))throw new Error('聚合字段不存在：'+am[2])});
+    if(group||hasAgg){let groups=[];if(group){const map=new Map();rows.forEach(r=>{const k=r[group];if(!map.has(k))map.set(k,[]);map.get(k).push(r)});groups=[...map.entries()].map(([key,arr])=>({key,arr}))}else groups=[{key:'all',arr:rows}];result=groups.map(({key,arr})=>{const out={};select.forEach(s=>{const aliasMatch=s.match(/\s+AS\s+([a-zA-Z_][\w]*)$/i),alias=aliasMatch?aliasMatch[1]:s;const base=s.replace(/\s+AS\s+.*$/i,'').trim();if(/^COUNT\s*\(/i.test(base))out[alias]=arr.length;else{const am=base.match(/^(SUM|AVG)\s*\(\s*([a-zA-Z_]+)\s*\)$/i);if(am){const total=arr.reduce((z,r)=>z+(+r[am[2]]||0),0);out[alias]=am[1].toUpperCase()==='AVG'?total/(arr.length||1):total}else if(base===group)out[alias]=key}});return out})}else{result=rows.map(r=>{const out={};select.forEach(s=>{const aliasMatch=s.match(/\s+AS\s+([a-zA-Z_][\w]*)$/i),alias=aliasMatch?aliasMatch[1]:s,base=s.replace(/\s+AS\s+.*$/i,'').trim();out[alias]=r[base]});return out})}
+    if(m[4]){const col=m[4],dir=(m[5]||'ASC').toUpperCase()==='DESC'?-1:1;result.sort((a,b)=>(a[col]>b[col]?1:a[col]<b[col]?-1:0)*dir)}if(m[6])result=result.slice(0,+m[6]);return result;
+  }
+  function renderSQL(){
+    let result=state.sqlResult;let error='';try{if(!result)result=runSQL(state.sqlQuery)}catch(e){error=e.message}
+    state.sqlResult=result;
+    const preview=loans.slice(0,12);
+    $('#view-sql').innerHTML=`
+      <div class="view-head"><div><h3>SQL 数据练习</h3><p>用一个带有 PD、LGD、EAD、客群和年份的贷款数据集，练习你在风险、数据治理和金融科技面试里最容易被追问的“从表里找到风险信号”。</p></div><button class="btn teal" id="saveSqlEvidence">保存 SQL 发现</button></div>
+      <div class="grid-2"><div class="panel dark"><div class="panel-head"><div><div class="eyebrow">Query console</div><h4 style="font-size:20px;margin-top:7px">写一条能解释业务的 SQL</h4></div><span class="tag dark">160 rows</span></div><textarea class="sql-editor" id="sqlEditor">${esc(state.sqlQuery)}</textarea><div class="sql-toolbar"><div class="sample-row"><button data-sql="SELECT segment, COUNT(*) AS loans, AVG(pd) AS avg_pd FROM loans GROUP BY segment ORDER BY avg_pd DESC">客群风险</button><button data-sql="SELECT vintage, COUNT(*) AS loans, SUM(ead) AS total_ead FROM loans GROUP BY vintage ORDER BY vintage ASC">年份暴露</button><button data-sql="SELECT id, segment, grade, pd, lgd, ead FROM loans WHERE pd >= 0.1 ORDER BY pd DESC LIMIT 10">高 PD 样本</button></div><button class="btn teal small" id="runSql">运行查询</button></div><div class="small-copy" style="color:#9ab2b4">支持 SELECT / WHERE / AND / GROUP BY / ORDER BY / LIMIT，以及 COUNT、SUM、AVG。</div></div><div class="panel"><div class="panel-head"><div><div class="section-label" style="margin:0 0 6px">Business translation</div><h4>把结果翻译成业务语言</h4></div><span class="tag">不要只贴表</span></div><div class="callout teal">当你查出某客群平均 PD 更高时，还要问：它的 EAD 是否足够大？是否只是样本结构不同？这个问题会决定你能否从“会 SQL”进阶到“懂风险”。</div><div style="margin-top:13px" class="field"><label>你的发现（写 2—3 句）</label><textarea id="sqlFinding" placeholder="例如：小微企业平均 PD 更高，但需要结合总 EAD 判断其对组合 EL 的实际贡献。下一步我会按 vintage 做稳定性检查。">${esc(state.project.findings)}</textarea></div></div></div>
+      <div class="section-label">Query result / 查询结果</div><div class="panel flat" style="padding:0">${error?`<div class="callout red" style="margin:15px">${esc(error)}</div>`:result?.length?`<div class="table-wrap" style="border:0"><table><thead><tr>${Object.keys(result[0]).map(k=>`<th>${esc(k)}</th>`).join('')}</tr></thead><tbody>${result.map(r=>`<tr>${Object.values(r).map(v=>`<td>${formatCell(v)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`:'<div class="empty">运行一条查询，结果会出现在这里。</div>'}</div>
+      <div class="section-label">Data dictionary / 数据字典</div><div class="panel flat" style="padding:0"><div class="table-wrap" style="border:0"><table><thead><tr><th>字段</th><th>类型</th><th>示例</th><th>岗位解释</th></tr></thead><tbody><tr><td class="mono">segment</td><td>text</td><td>小微企业</td><td>客群分层与风险策略</td></tr><tr><td class="mono">grade</td><td>text</td><td>B</td><td>风险等级标签</td></tr><tr><td class="mono">pd / lgd</td><td>float</td><td>0.028 / 0.36</td><td>风险计量输入</td></tr><tr><td class="mono">ead</td><td>number</td><td>180,000</td><td>暴露规模与集中度</td></tr><tr><td class="mono">overdue</td><td>boolean</td><td>true</td><td>结果/监测标签</td></tr></tbody></table></div></div>
+      <div class="section-label">Raw sample / 原始数据前 12 行</div><div class="panel flat" style="padding:0"><div class="table-wrap" style="border:0"><table><thead><tr>${Object.keys(preview[0]).map(k=>`<th>${k}</th>`).join('')}</tr></thead><tbody>${preview.map(r=>`<tr>${Object.values(r).map(v=>`<td>${typeof v==='number'?(v<1?num(v,4):money(v)):esc(v)}</td>`).join('')}</tr>`).join('')}</tbody></table></div></div>`;
+    $('#runSql').onclick=()=>{state.sqlQuery=$('#sqlEditor').value;state.sqlResult=null;renderSQL();toast('SQL 已执行')};
+    $('#sqlFinding').oninput=e=>{state.project.findings=e.target.value;state.project.evidence.data=!!e.target.value.trim()};
+    $$('[data-sql]').forEach(b=>b.onclick=()=>{$('#sqlEditor').value=b.dataset.sql;state.sqlQuery=b.dataset.sql;state.sqlResult=null;renderSQL()});
+    $('#saveSqlEvidence').onclick=()=>{state.project.evidence.data=true;state.project.evidence.method=true;state.project.findings=$('#sqlFinding').value||'已完成客群、EAD 与 PD 的分组查询，并准备进一步检查 vintage 稳定性。';renderSQL();renderProject();renderDashboard();updateSignals();toast('SQL 发现已写入项目证据')};
+  }
+
+  function projectBrief(){
+    const pm=portfolioMetrics(state.risk.pdMult,state.risk.lgdMult,state.risk.segment),lead=pm.bySeg.slice().sort((a,b)=>b.el-a.el)[0],q=state.quant,a=bs(+q.S,+q.K,+q.T,+q.r,+q.sigma,q.type),mc=monteCarlo(+q.S,+q.K,+q.T,+q.r,+q.sigma,q.type,+q.paths,q.seed);
+    const bullets=[`基于 ${pm.rows.length} 条合成贷款记录，使用 SQL 完成客群、年份与高风险样本拆解，建立可追溯的数据字典。`,`构建 PD × LGD × EAD 的预期损失计算，并在 PD ×${qf(state.risk.pdMult)}、LGD ×${qf(state.risk.lgdMult)} 情景下进行压力测试，识别 ${lead.segment} 为当前压力损失最高贡献客群。`,`以 Black–Scholes 解析价格 ${a.price.toFixed(4)} 为基准，用 ${money(q.paths)} 条路径的 Monte Carlo 结果进行数值复核，并报告标准误与 95% 置信区间。`];
+    return {pm,lead,bullets,quant:{...q,analytic:a.price,mc:mc.price,mcSe:mc.se,ciLow:mc.ciLow,ciHigh:mc.ciHigh}}
+  }
+  function qf(x){return (+x).toFixed(2)}
+  function renderProject(){
+    const p=state.project,b=projectBrief();
+    $('#view-project').innerHTML=`
+      <div class="view-head"><div><h3>项目证据包</h3><p>把工作台产生的结果组织成面试官可追问、你能复现、也不会夸大的项目叙事。填写完成后可以导出 Markdown。</p></div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" id="downloadBrief">下载项目简报</button><button class="btn teal" id="markStory">标记为可面试</button></div></div>
+      <div class="project-tabs"><button class="active">项目骨架</button><button>面试叙事</button><button>简历表达</button></div>
+      <div class="grid-2"><div class="panel"><div class="panel-head"><div><div class="section-label" style="margin:0 0 6px">Project brief</div><h4>先把项目说准确</h4></div><span class="tag">不编造</span></div><div class="form-grid"><div class="field full"><label>项目标题</label><input id="pTitle" value="${esc(p.title)}"></div><div class="field full"><label>研究问题</label><textarea id="pQuestion">${esc(p.question)}</textarea></div><div class="field full"><label>我的角色</label><textarea id="pRole">${esc(p.role)}</textarea></div><div class="field full"><label>方法链</label><textarea id="pMethod">${esc(p.method)}</textarea></div><div class="field full"><label>发现（由你确认后写入）</label><textarea id="pFindings">${esc(p.findings||b.pm.bySeg.slice().sort((a,c)=>c.el-a.el)[0].segment+' 在当前压力情景下贡献最高，需要结合样本结构和压力因子做进一步验证。')}</textarea></div><div class="field full"><label>局限性</label><textarea id="pLimits">${esc(p.limits)}</textarea></div><div class="field full"><label>下一步验证</label><textarea id="pNext">${esc(p.next)}</textarea></div></div><div class="pill-row"><span class="pill ${p.evidence.problem?'active':''}">问题定义</span><span class="pill ${p.evidence.data?'active':''}">数据口径</span><span class="pill ${p.evidence.method?'active':''}">方法选择</span><span class="pill ${p.evidence.result?'active':''}">结果</span><span class="pill ${p.evidence.limit?'active':''}">局限</span><span class="pill ${p.evidence.story?'active':''}">故事</span></div></div>
+      <div class="panel dark"><div class="panel-head"><div><div class="eyebrow">Evidence generated from this session</div><h4 style="font-size:21px;margin-top:7px">可直接练习的面试材料</h4></div><span class="tag dark">${evidenceCount()} / 6 evidence</span></div><div class="evidence"><h4>90 秒口述稿 · 先读，再改成自己的话</h4><p>我做了一个<strong>“${esc(p.title)}”</strong>的小型风险分析项目，想回答的问题是：<strong>${esc(p.question)}</strong>。</p><p>我先用 SQL 对贷款记录按客群和年份分组，建立字段口径；再用 <strong>PD、LGD 和 EAD</strong> 计算预期损失，并通过 PD ×${qf(state.risk.pdMult)}、LGD ×${qf(state.risk.lgdMult)} 的压力情景观察损失贡献。当前结果显示，<strong>${esc(b.lead.segment)}</strong> 是压力损失贡献最高的客群，但我不会直接把这个结论当成策略，因为还需要检查样本结构、时间稳定性和压力因子假设。</p><p>为了补充金融工程能力，我又用 Black–Scholes 和 Monte Carlo 对同一组期权参数做价格对照，报告了标准误，而不是只给一个价格。这个项目让我练习了从<strong>业务问题、数据口径、模型计算到管理解释</strong>的完整闭环。</p></div><div style="margin-top:14px" class="callout" >追问准备：为什么是 EL？为什么压力因子这样设？如何验证客群差异不是样本偏差？合成数据与真实生产数据有什么区别？</div></div></div>
+      <div class="section-label">Resume translation / 简历表达</div><div class="grid-2"><div class="panel"><h4>中文简历 bullet（请按真实完成情况修改）</h4><div class="code">• 搭建离线零售贷款风险监测练习：用 SQL 完成客群、年份与高 PD 样本拆解，基于 PD/LGD/EAD 计算预期损失，并通过压力因子识别损失贡献差异。\n\n• 以 Black–Scholes 解析解为基准，使用 Monte Carlo 对期权价格进行数值复核，记录标准误、路径数与模型假设，形成可复现的金融工程实验记录。</div></div><div class="panel"><h4>英文简历 bullet（克制版本）</h4><div class="code">• Built an offline retail-loan risk monitoring exercise using SQL and PD/LGD/EAD-based expected-loss analysis; segmented portfolio risk by customer type and vintage under stressed assumptions.\n\n• Cross-checked Black–Scholes option prices with Monte Carlo simulation and documented path count, standard error, model assumptions, and limitations.</div></div></div>
+      <div class="section-label">Evidence checklist / 证据验收</div><div class="panel flat" style="padding:0"><div class="table-wrap" style="border:0"><table><thead><tr><th>证据</th><th>当前状态</th><th>验收标准</th><th>动作</th></tr></thead><tbody>${[['problem','问题定义','能说清业务问题和假设'],['data','数据与口径','能解释每个字段、样本和口径'],['method','方法选择','能解释为什么选 EL、压力测试或 MC'],['result','结果与动作','有数字、有最高贡献客群、有下一步'],['limit','局限与验证','主动说合成数据、标签、稳定性限制'],['story','面试故事','能在 90 秒讲完并回答追问']].map(([key,name,rule])=>`<tr><td>${name}</td><td><span class="tag ${p.evidence[key]?'':'amber'}">${p.evidence[key]?'已完成':'待补'}</span></td><td>${rule}</td><td><button class="btn small" data-evidence="${key}">${p.evidence[key]?'取消标记':'标记完成'}</button></td></tr>`).join('')}</tbody></table></div></div>`;
+    ['pTitle','pQuestion','pRole','pMethod','pFindings','pLimits','pNext'].forEach(id=>{const map={pTitle:'title',pQuestion:'question',pRole:'role',pMethod:'method',pFindings:'findings',pLimits:'limits',pNext:'next'};$('#'+id).oninput=e=>{p[map[id]]=e.target.value; if(id==='pQuestion')p.evidence.problem=!!e.target.value.trim();if(id==='pMethod')p.evidence.method=!!e.target.value.trim();if(id==='pLimits')p.evidence.limit=!!e.target.value.trim();updateSignals()}});
+    $$('[data-evidence]').forEach(btn=>btn.onclick=()=>{const k=btn.dataset.evidence;p.evidence[k]=!p.evidence[k];renderProject();renderDashboard();updateSignals();toast(p.evidence[k]?'证据已标记完成':'已取消标记')});
+    $('#markStory').onclick=()=>{p.evidence.story=true;p.evidence.problem=true;p.evidence.limit=!!p.limits.trim();renderProject();renderDashboard();updateSignals();toast('项目已标记为可进入面试演练')};
+    $('#downloadBrief').onclick=()=>{download('金融风险项目证据包.md',makeBriefMarkdown(),'text/markdown;charset=utf-8');toast('项目简报已下载')};
+  }
+  function makeBriefMarkdown(){const p=state.project,b=projectBrief();return `# ${p.title}\n\n> 训练用途：金融风险管理 / 金融科技 / 金融工程面试项目证据\n\n## 1. 研究问题\n${p.question}\n\n## 2. 我的角色\n${p.role}\n\n## 3. 数据与方法\n${p.method}\n\n- 样本：${b.pm.rows.length} 条离线合成贷款记录\n- 字段：segment、grade、PD、LGD、EAD、DTI、vintage、overdue\n- 当前压力情景：PD × ${qf(state.risk.pdMult)}；LGD × ${qf(state.risk.lgdMult)}\n- 组合压力 EL：${money(b.pm.stressEl)}\n- 最高贡献客群：${b.lead.segment}\n\n## 4. 关键发现\n${p.findings||'待补：请在 SQL 练习与风险实验后，用自己的话确认发现。'}\n\n## 5. 金工补充实验\n- ${state.quant.type.toUpperCase()} 解析价格：${b.quant.analytic.toFixed(4)}\n- Monte Carlo 路径数：${money(state.quant.paths)}（seed=${state.quant.seed}）\n- Monte Carlo 价格：${b.quant.mc.toFixed(4)}\n- 标准误：${b.quant.mcSe.toFixed(4)}；95% CI：[${b.quant.ciLow.toFixed(4)}, ${b.quant.ciHigh.toFixed(4)}]\n\n## 6. 局限性\n${p.limits}\n\n## 7. 下一步验证\n${p.next}\n\n## 8. 90 秒口述草稿\n我做了一个“${p.title}”的小型风险分析项目，想回答的问题是：${p.question}。我先用 SQL 对贷款记录按客群和年份分组，建立字段口径；再用 PD、LGD 和 EAD 计算预期损失，并通过压力情景观察损失贡献。当前结果显示，${b.lead.segment} 是压力损失贡献最高的客群，但我会进一步检查样本结构、时间稳定性和压力因子假设。为了补充金融工程能力，我又用 Black–Scholes 和 Monte Carlo 做价格对照并报告标准误。这个项目让我练习了从业务问题、数据口径、模型计算到管理解释的闭环。\n\n## 9. 简历 bullet（需按真实完成情况修改）\n${b.bullets.map(x=>'- '+x).join('\n')}\n`}
+
+  function renderLocal(){
+    const completed=new Set(state.local.completed||[]),checks=state.local.checks||{};
+    const py=`import csv
+import sqlite3
+from pathlib import Path
+
+CSV_PATH = Path("loans_training.csv")
+DB_PATH = Path("loans.db")
+
+if not CSV_PATH.exists():
+    raise SystemExit("请把 loans_training.csv 放在脚本同一目录")
+
+with CSV_PATH.open(newline="", encoding="utf-8-sig") as f:
+    rows = list(csv.DictReader(f))
+
+conn = sqlite3.connect(DB_PATH)
+conn.row_factory = sqlite3.Row
+with conn:
+    conn.execute("DROP TABLE IF EXISTS loans")
+    conn.execute("""
+        CREATE TABLE loans (
+            id TEXT PRIMARY KEY, segment TEXT, grade TEXT,
+            pd REAL, lgd REAL, ead REAL, rate REAL, dti REAL,
+            vintage INTEGER, overdue TEXT
+        )
+    """)
+    conn.executemany("""
+        INSERT INTO loans
+        (id, segment, grade, pd, lgd, ead, rate, dti, vintage, overdue)
+        VALUES (:id, :segment, :grade, :pd, :lgd, :ead, :rate, :dti, :vintage, :overdue)
+    """, rows)
+    result = conn.execute("""
+        SELECT segment, COUNT(*) AS loans,
+               SUM(ead) AS total_ead, AVG(pd) AS avg_pd
+        FROM loans
+        GROUP BY segment
+        ORDER BY total_ead DESC
+    """).fetchall()
+
+for row in result:
+    print(dict(row))
+
+conn.close()`;
+    const sql=`SELECT segment, COUNT(*) AS loans, SUM(ead) AS total_ead, AVG(pd) AS avg_pd\nFROM loans\nGROUP BY segment\nORDER BY total_ead DESC;`;
+    const checksList=[
+      ['python','Python 环境检查','在终端运行 python3 --version，并记录版本；理解为什么风险岗位常用 Python 做数据处理和模型验证。'],
+      ['sqlite','SQLite 建库练习','使用 sqlite3 导入一份 CSV，建立 loans 表，并运行一条 GROUP BY 查询。'],
+      ['query','独立 SQL 题','不复制工作台示例：查询每个 vintage 的总 EAD、平均 PD，并找出平均 PD 最高的年份。'],
+      ['test','独立验证题','改变一个参数或随机种子，验证 MC 价格在置信区间内变化；记录你看到的差异和解释。'],
+      ['evidence','真实证据留存','把代码、终端输出、错误修复和一段局限性说明放进一个本地项目文件夹。']
+    ];
+    $('#view-local').innerHTML=`
+      <div class="view-head"><div><h3>本机练习：把按钮变成代码</h3><p>浏览器里的交互实验只能证明你会使用这个工作台；本页把训练推进到本机 Python + SQLite。真正的能力证据应该包括代码、运行输出、错误修复和你的解释。</p></div><button class="btn teal" id="downloadStarter">下载 starter 文件</button></div>
+      <div class="callout red"><b>诚实边界：</b>勾选下方任务不会自动证明你掌握了 Python 或 SQL。只有你在本机独立运行、保存输出并通过未见过的验证题，才可以把它写成“完成过的练习”；不应直接写成生产经验。</div>
+      <div class="section-label">Local checklist / 本机验收</div>
+      <div class="panel flat" style="padding:0"><div class="table-wrap" style="border:0"><table><thead><tr><th>状态</th><th>任务</th><th>你要留下什么</th><th>动作</th></tr></thead><tbody>${checksList.map(([id,name,rule])=>`<tr><td><span class="tag ${completed.has(id)?'':'amber'}">${completed.has(id)?'已完成':'待完成'}</span></td><td><b>${name}</b></td><td>${rule}</td><td><button class="btn small" data-local-check="${id}">${completed.has(id)?'取消标记':'完成后标记'}</button></td></tr>`).join('')}</tbody></table></div></div>
+      <div class="section-label">Starter pack / 起步材料</div>
+      <div class="grid-2"><div class="panel dark"><div class="panel-head"><div><div class="eyebrow">Python + sqlite3</div><h4 style="font-size:20px;margin-top:7px">最小可运行脚本</h4></div><span class="tag dark">离线</span></div><p style="color:#a9c0c2">下载后，把查询改成你自己写的版本。工作台不会替你执行本机代码。</p><div class="code">${esc(py)}</div><div style="margin-top:12px"><button class="btn teal small" id="copyPy">复制 Python 片段</button></div></div><div class="panel"><div class="panel-head"><div><div class="section-label" style="margin:0 0 6px">Independent SQL</div><h4>不要停在样例 SQL</h4></div><span class="tag">新题</span></div><p>先自己写，再对照工作台。把结果解释成一句风险结论，并写下你没有检查到的地方。</p><div class="code" style="color:#185e67;background:#eaf7f5">${esc(sql)}</div><div class="field" style="margin-top:13px"><label>本机运行记录 / 错误修复</label><textarea id="localNote" placeholder="例如：第一次把 avg_pd 写成 AVG(PD)，结果为空；我检查了字段名并重新建表。">${esc(state.local.checks.note||'')}</textarea></div></div></div>
+      <div class="section-label">Definition of done / 完成标准</div><div class="grid-3"><div class="panel"><h4>可复现</h4><p>另一个人拿到你的 SQL、数据字典和命令，可以得到相同结果。</p></div><div class="panel"><h4>可解释</h4><p>你能说明字段、方法、结果和局限，而不是只展示截图。</p></div><div class="panel"><h4>可迁移</h4><p>你能把练习连接到风险、清算、数据治理或模型验证岗位。</p></div></div>`;
+    $$('[data-local-check]').forEach(btn=>btn.onclick=()=>{const id=btn.dataset.localCheck;const a=new Set(state.local.completed||[]);a.has(id)?a.delete(id):a.add(id);state.local.completed=[...a];if(id==='evidence')state.project.evidence.story=a.has(id);renderLocal();renderDashboard();updateSignals();toast(a.has(id)?'本机任务已标记':'已取消标记')});
+    $('#localNote').oninput=e=>{state.local.checks.note=e.target.value};
+    $('#copyPy').onclick=async()=>{try{await navigator.clipboard.writeText(py);toast('Python 片段已复制')}catch(e){toast('浏览器不允许自动复制，请手动选择代码')}};
+    $('#downloadStarter').onclick=()=>{const csv=['id,segment,grade,pd,lgd,ead,rate,dti,vintage,overdue',...loans.map(x=>[x.id,x.segment,x.grade,x.pd,x.lgd,x.ead,x.rate,x.dti,x.vintage,x.overdue].join(','))].join('\n');download('loans_training.csv',csv);setTimeout(()=>download('risk_training_starter.py',py),250);toast('已下载 CSV 与 Python starter')};
+  }
+
+  function renderInterview(){
+    const q=questions[state.interview.question];const avg=Object.values(state.interview.scores).reduce((a,b)=>a+b,0)/5;
+    $('#view-interview').innerHTML=`
+      <div class="view-head"><div><h3>面试演练</h3><p>先自己回答，再看提示。评分只衡量“是否可验证、是否有边界、是否能连到岗位”，不是口才测试。</p></div><button class="btn teal" id="newQuestion">换一道题</button></div>
+      <div class="grid-2"><div class="panel dark"><div class="panel-head"><div><div class="eyebrow">Question ${state.interview.question+1} / ${questions.length}</div><h4 style="font-size:21px;margin-top:7px">${q.q}</h4></div><span class="tag dark">${avg.toFixed(1)} / 5</span></div><p style="color:#a9c0c2">提示：${q.hint}</p><div class="answer-box" id="answerBox" contenteditable="true" data-placeholder="先不看提示，直接说 60—90 秒……">${esc(state.interview.answer)}</div><div style="display:flex;justify-content:flex-end;margin-top:12px"><button class="btn teal small" id="saveAnswer">保存回答</button></div></div><div class="panel"><div class="panel-head"><div><div class="section-label" style="margin:0 0 6px">Rubric</div><h4>自评五维度</h4></div><span class="tag">1—5 分</span></div><p>面试官更相信“具体、可复核、知道边界”的回答。</p><div class="rubric">${[['problem','问题定义'],['method','方法解释'],['result','结果证据'],['tradeoff','取舍与局限'],['communication','表达结构']].map(([k,n])=>`<div class="rubric-row"><span>${n}</span><input type="range" min="1" max="5" step="1" value="${state.interview.scores[k]}" data-score="${k}"><b>${state.interview.scores[k]}</b></div>`).join('')}</div><div class="meter" style="margin-top:17px"><i style="width:${avg/5*100}%"></i></div><div class="small-copy">目标：连续两次达到 4 分以上，并能回答一个追问。</div></div></div>
+      <div class="section-label">追问卡片</div><div class="grid-3"><div class="panel"><h4>事实</h4><p>你用了什么数据？样本多少？输出是什么？</p></div><div class="panel"><h4>判断</h4><p>为什么选这个方法？还有什么替代方案？</p></div><div class="panel"><h4>边界</h4><p>哪些结论不能从这个实验直接推出？</p></div></div>
+      <div class="section-label">表达骨架</div><div class="panel"><div class="code">1. 背景：我想回答一个与风险管理/金融科技岗位相关的具体问题。\n2. 动作：我使用了什么数据、工具和方法，为什么这样做。\n3. 结果：最重要的数字和发现是什么。\n4. 验证：我做了什么检查，哪些地方仍然不确定。\n5. 迁移：这段经历让我能在岗位中承担什么工作。</div></div>`;
+    $('#newQuestion').onclick=()=>{state.interview.question=(state.interview.question+1)%questions.length;state.interview.answer='';renderInterview()};
+    $('#saveAnswer').onclick=()=>{state.interview.answer=$('#answerBox').innerText.trim();state.project.evidence.story=!!state.interview.answer;renderInterview();renderProject();renderDashboard();updateSignals();toast('回答已保存')};
+    $$('[data-score]').forEach(x=>x.oninput=e=>{state.interview.scores[e.target.dataset.score]=+e.target.value;e.target.parentElement.querySelector('b').textContent=e.target.value;updateSignals()});
+  }
+
+  function render(){
+    if(state.view==='dashboard')renderDashboard();
+    if(state.view==='roadmap')renderRoadmap();
+    if(state.view==='risk')renderRisk();
+    if(state.view==='quant')renderQuant();
+    if(state.view==='sql')renderSQL();
+    if(state.view==='project')renderProject();
+    if(state.view==='interview')renderInterview();
+    if(state.view==='local')renderLocal();
+    updateSignals();
+  }
+  function exportState(){
+    const payload={version:1,exportedAt:new Date().toISOString(),state:{...state}};download('金融风险训练进度.json',JSON.stringify(payload,null,2),'application/json;charset=utf-8');toast('训练进度已导出')
+  }
+  $('#exportBtn').onclick=exportState;$('#importBtn').onclick=()=>$('#importFile').click();$('#importFile').onchange=e=>{const file=e.target.files[0];if(!file)return;const reader=new FileReader();reader.onload=()=>{try{const data=JSON.parse(reader.result);if(!data.state)throw new Error('文件中没有 state');Object.assign(state,data.state);render();toast('训练进度已导入')}catch(err){toast('导入失败：'+err.message)}};reader.readAsText(file)};
+  document.addEventListener('click',e=>{const nav=e.target.closest('[data-view]');if(nav)setView(nav.dataset.view);const jump=e.target.closest('[data-jump]');if(jump)setView(jump.dataset.jump)});
+  render();
+})();
+</script>
+</body>
+</html>

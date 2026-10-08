@@ -17,7 +17,10 @@ TOOLS = {
     'fundamentals': 'Read point-in-time financial margins and revenue growth',
     'credit': 'Calculate synthetic credit expected loss under a fixed stress',
     'bond': 'Calculate a five-year bond with a +100bp yield shock',
+    'screen': 'Read deterministic investment universe screening results',
+    'portfolio': 'Read deterministic portfolio weights and stress diagnostics',
 }
+
 
 
 def _request(client: LlmClient, instruction: str, data: dict) -> tuple[dict, dict]:

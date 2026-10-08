@@ -1,0 +1,25 @@
+dataset_id,country,iso3,year,export_pct_gdp,source_url,snapshot_updated
+world_bank_exports_pct_gdp,United States,USA,2018,12.2871107596266,https://api.worldbank.org/v2/country/USA;CHN;JPN;DEU/indicator/NE.EXP.GNFS.ZS?date=2018:2023&format=json&per_page=30,2026-07-13
+world_bank_exports_pct_gdp,United States,USA,2019,11.7891974097286,https://api.worldbank.org/v2/country/USA;CHN;JPN;DEU/indicator/NE.EXP.GNFS.ZS?date=2018:2023&format=json&per_page=30,2026-07-13
+world_bank_exports_pct_gdp,United States,USA,2020,10.1230809550527,https://api.worldbank.org/v2/country/USA;CHN;JPN;DEU/indicator/NE.EXP.GNFS.ZS?date=2018:2023&format=json&per_page=30,2026-07-13
+world_bank_exports_pct_gdp,United States,USA,2021,10.8266687797107,https://api.worldbank.org/v2/country/USA;CHN;JPN;DEU/indicator/NE.EXP.GNFS.ZS?date=2018:2023&format=json&per_page=30,2026-07-13
+world_bank_exports_pct_gdp,United States,USA,2022,11.6540970440015,https://api.worldbank.org/v2/country/USA;CHN;JPN;DEU/indicator/NE.EXP.GNFS.ZS?date=2018:2023&format=json&per_page=30,2026-07-13
+world_bank_exports_pct_gdp,United States,USA,2023,11.0506737190927,https://api.worldbank.org/v2/country/USA;CHN;JPN;DEU/indicator/NE.EXP.GNFS.ZS?date=2018:2023&format=json&per_page=30,2026-07-13
+world_bank_exports_pct_gdp,Germany,DEU,2018,42.4968914074717,https://api.worldbank.org/v2/country/USA;CHN;JPN;DEU/indicator/NE.EXP.GNFS.ZS?date=2018:2023&format=json&per_page=30,2026-07-13
+world_bank_exports_pct_gdp,Germany,DEU,2019,42.3402444816356,https://api.worldbank.org/v2/country/USA;CHN;JPN;DEU/indicator/NE.EXP.GNFS.ZS?date=2018:2023&format=json&per_page=30,2026-07-13
+world_bank_exports_pct_gdp,Germany,DEU,2020,39.1198068808828,https://api.worldbank.org/v2/country/USA;CHN;JPN;DEU/indicator/NE.EXP.GNFS.ZS?date=2018:2023&format=json&per_page=30,2026-07-13
+world_bank_exports_pct_gdp,Germany,DEU,2021,42.5198379291429,https://api.worldbank.org/v2/country/USA;CHN;JPN;DEU/indicator/NE.EXP.GNFS.ZS?date=2018:2023&format=json&per_page=30,2026-07-13
+world_bank_exports_pct_gdp,Germany,DEU,2022,45.6284043425185,https://api.worldbank.org/v2/country/USA;CHN;JPN;DEU/indicator/NE.EXP.GNFS.ZS?date=2018:2023&format=json&per_page=30,2026-07-13
+world_bank_exports_pct_gdp,Germany,DEU,2023,42.9672624196847,https://api.worldbank.org/v2/country/USA;CHN;JPN;DEU/indicator/NE.EXP.GNFS.ZS?date=2018:2023&format=json&per_page=30,2026-07-13
+world_bank_exports_pct_gdp,Japan,JPN,2018,17.9111434788682,https://api.worldbank.org/v2/country/USA;CHN;JPN;DEU/indicator/NE.EXP.GNFS.ZS?date=2018:2023&format=json&per_page=30,2026-07-13
+world_bank_exports_pct_gdp,Japan,JPN,2019,17.0377974181499,https://api.worldbank.org/v2/country/USA;CHN;JPN;DEU/indicator/NE.EXP.GNFS.ZS?date=2018:2023&format=json&per_page=30,2026-07-13
+world_bank_exports_pct_gdp,Japan,JPN,2020,15.1286902986314,https://api.worldbank.org/v2/country/USA;CHN;JPN;DEU/indicator/NE.EXP.GNFS.ZS?date=2018:2023&format=json&per_page=30,2026-07-13
+world_bank_exports_pct_gdp,Japan,JPN,2021,17.4619853799579,https://api.worldbank.org/v2/country/USA;CHN;JPN;DEU/indicator/NE.EXP.GNFS.ZS?date=2018:2023&format=json&per_page=30,2026-07-13
+world_bank_exports_pct_gdp,Japan,JPN,2022,20.647867347033,https://api.worldbank.org/v2/country/USA;CHN;JPN;DEU/indicator/NE.EXP.GNFS.ZS?date=2018:2023&format=json&per_page=30,2026-07-13
+world_bank_exports_pct_gdp,Japan,JPN,2023,21.0593101343597,https://api.worldbank.org/v2/country/USA;CHN;JPN;DEU/indicator/NE.EXP.GNFS.ZS?date=2018:2023&format=json&per_page=30,2026-07-13
+world_bank_exports_pct_gdp,China,CHN,2018,18.770519802938,https://api.worldbank.org/v2/country/USA;CHN;JPN;DEU/indicator/NE.EXP.GNFS.ZS?date=2018:2023&format=json&per_page=30,2026-07-13
+world_bank_exports_pct_gdp,China,CHN,2019,18.1398222864053,https://api.worldbank.org/v2/country/USA;CHN;JPN;DEU/indicator/NE.EXP.GNFS.ZS?date=2018:2023&format=json&per_page=30,2026-07-13
+world_bank_exports_pct_gdp,China,CHN,2020,18.2696013805051,https://api.worldbank.org/v2/country/USA;CHN;JPN;DEU/indicator/NE.EXP.GNFS.ZS?date=2018:2023&format=json&per_page=30,2026-07-13
+world_bank_exports_pct_gdp,China,CHN,2021,19.4350556514909,https://api.worldbank.org/v2/country/USA;CHN;JPN;DEU/indicator/NE.EXP.GNFS.ZS?date=2018:2023&format=json&per_page=30,2026-07-13
+world_bank_exports_pct_gdp,China,CHN,2022,20.227756033041,https://api.worldbank.org/v2/country/USA;CHN;JPN;DEU/indicator/NE.EXP.GNFS.ZS?date=2018:2023&format=json&per_page=30,2026-07-13
+world_bank_exports_pct_gdp,China,CHN,2023,19.4023091648376,https://api.worldbank.org/v2/country/USA;CHN;JPN;DEU/indicator/NE.EXP.GNFS.ZS?date=2018:2023&format=json&per_page=30,2026-07-13

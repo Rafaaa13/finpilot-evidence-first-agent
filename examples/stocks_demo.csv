@@ -1,0 +1,9 @@
+symbol,name,sector,currency,price_as_of,price,eps_ttm,revenue_growth,operating_margin,fcf_margin,debt_to_equity,period_end,filed_at,source
+DEMO01,示例云服务,软件,USD,2025-12-31,40,2,0.18,0.24,0.18,0.25,2025-09-30,2025-11-15,demo://synthetic/DEMO01
+DEMO02,示例医疗设备,医疗器械,USD,2025-12-31,60,3,0.11,0.2,0.14,0.45,2025-09-30,2025-11-15,demo://synthetic/DEMO02
+DEMO03,示例高估值芯片,半导体,USD,2025-12-31,120,2,0.3,0.22,0.08,0.6,2025-09-30,2025-11-15,demo://synthetic/DEMO03
+DEMO04,示例亏损消费,可选消费,USD,2025-12-31,20,-1,-0.05,-0.08,-0.1,1.2,2025-09-30,2025-11-15,demo://synthetic/DEMO04
+DEMO05,示例工业自动化,工业,USD,2025-12-31,50,2.5,0.07,0.16,0.12,0.8,2025-09-30,2025-11-15,demo://synthetic/DEMO05
+DEMO06,示例网络设备,通信设备,USD,2025-12-31,36,2.4,0.13,0.18,0.16,0.4,2025-09-30,2025-11-15,demo://synthetic/DEMO06
+DEMO07,示例高杠杆材料,原材料,USD,2025-12-31,24,1.2,0.02,0.1,0.03,3.8,2025-09-30,2025-11-15,demo://synthetic/DEMO07
+DEMO08,示例初创设备,电子设备,USD,2025-12-31,30,1.5,0.16,0.18,0.1,0.5,2025-09-30,2026-01-15,demo://synthetic/DEMO08

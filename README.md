@@ -1,169 +1,198 @@
 # FinPilot
 
-FinPilot 是一个**证据优先的金融风险研究工作台原型**。它把点时可见性、单位口径、确定性计算、证据引用、风险闸门和可复现运行记录放在一条可审计链路上。它的目标不是替研究员或风险人员给出交易答案，而是让每一个可复核的结论都能回答：
+> Screen a synthetic equity universe, build a capped long-only portfolio, stress it on common-date returns, and export an evidence-linked research memo — locally, reproducibly, without an LLM.
 
-1. 这条数据在什么时间点已经可见？
-2. 数字使用了什么公式、单位和假设？
-3. 叙述或结论由哪些证据支持？
-4. 在什么情况下系统应该停止并交给人复核？
+FinPilot 是一个本地优先的金融研究与风险工作台。它不是“会聊天的选股机器人”，而是一条可以被复核的研究流程：输入研究截止日和数据，先做点时与口径检查，再筛选候选、配置组合、做风险压力诊断，最后导出研究备忘录。LLM 只作为可选的自然语言增强，不参与金融算术、权重计算或风险门禁。
 
-> 当前项目是离线、合成数据、教育用途的原型。它不是投资建议、生产风控审批系统、交易执行系统、监管模型或商业部署。
+当前默认演示使用固定种子的合成数据。`DEMO01`—`DEMO08` 不是现实证券，演示中的收益、评分和压力数值不能用于投资决策。
 
-## 当前状态：先说清楚已实现与未实现
+## 你可以用它做什么
 
-仓库当前的可信边界如下。**“已测试”只表示仓库中存在对应代码和本地测试，不表示真实业务有效、模型校准或用户认可。**
+FinPilot 适合演示和训练四类金融任务。投资研究入口根据 PE、收入增长、经营利润率、自由现金流率、债务/权益比和数据完整性筛选候选；组合入口支持等权、得分权重和低波倒数权重，设置单票上限后将剩余部分保留为现金；风险入口用共同日期日收益计算一日参数压力、最差 20 日历史回放和相关性压力；信用与固收入口分别展示 EAD 加权 Expected Loss、PD/LGD 压力、AUC/Brier/ECE、债券久期/凸性/DV01 和期权定价交叉核对。
 
-| 范围 | 当前可核验状态 | 不应据此宣称 |
-| --- | --- | --- |
-| `data.py` | 固定种子合成 fixture；保留 `effective_at`、`filed_at`、`raw_ref`、单位和来源定位；按 `as_of` 过滤 | 真实 SEC、Yahoo 或其他市场数据 |
-| `analytics.py` | 市场特征、财务特征、风险快照和描述性综合分数有确定性代码与单元测试 | alpha、投资建议、经过校准的风险概率 |
-| `backtest.py` | 明确的信号日→下一收盘执行模型、交易成本、基准、泄漏检查和小样本测试 | 回测证明 alpha、可交易收益或未来表现 |
-| `risk.py` | 合成贷款损失、时间切分的分类指标、债券价格/久期/凸性/DV01、Black–Scholes 和可选种子化 Monte Carlo 有代码与测试 | IFRS 9、监管资本、真实校准、定价意见或审批结论 |
-| `pipeline.py` / `agents.py` / `risk.py` | 离线 fixture、确定性分析、证据台账、信用压力、固收/期权工具、风险标记和 trace；有 31 项本地测试 | 已接入实时数据、完整策略引擎、监管模型或生产服务 |
-| `ui.py` / `server.py` / `workbench.html` | 可导出独立工作台；本机只读服务提供研究、信用、固收、评测、面试训练和工程边界页 | 已上线的公网 Web 产品或外部用户验证 |
-| MCP / LLM / Agent | 有受限 MCP stdio、OpenAI-compatible 客户端和两次调用的工具选择路径；默认仍离线、不连真实服务 | 已安装 MCP、已访问 live data、已完成真实模型质量评测 |
-| evaluation / 用户研究 | 24 项离线验收覆盖哈希、点时、数字一致性、负例和手算基准；有访谈协议但尚无外部用户与线上指标 | 已有真实准确率、留存、节省时间、付费或用户验证结果 |
+工作台支持“新手引导”和“专业工作台”两种视图。新手模式先看候选/组合/压力四步流程，并可直接回放内置的 2025、2022 加息周期、2020 疫情后恢复三个合成投资案例和公开 S&P 500 月度市场案例；专业模式展开估值敏感性、证据账本和配置/再平衡草案，包括资金、现金底线、单票/行业约束、换手和手续费估算。组合草案不会连接交易所或下单。
 
-项目借鉴 TradingAgents、OpenBB、Qlib 的公开设计问题，但不依赖它们，也没有抄写其代码。参考过不等于安装过或接通过。
+它的关键用途不是替你得出“买什么”，而是让你能清楚回答：候选为什么入选或被排除？组合规则是什么？现金为什么没有被强行配置？压力情景用的是什么日期和假设？数据是否由用户核验？哪些地方必须交给研究员复核？
 
-## 为什么做 FinPilot
+## 5 分钟上手
 
-金融研究工具通常把资料检索、数字计算和叙述生成混在一起，容易出现四类错误：
-
-- 将报告期、披露日和系统可见日混为一谈；
-- 将未知单位直接当成可比较的数值；
-- 让模型生成或改写数字算术；
-- 在回测中用生成信号的同一根 bar 执行交易。
-
-FinPilot 的相反顺序是：**先执行有边界的确定性规则，再让可选的 LLM 处理受限的解释任务；遇到未知单位、未来信息、证据缺失或结构不兼容时 fail-closed。** 数字算术、点时过滤、风险闸门和安全决策不交给 LLM。
-
-项目同时服务两条求职主线：
-
-- **AI 产品线**：把访谈、PRD、埋点 SQL、冻结评测、RAG/agent 工具、成本、安全和跨团队协作变成可验收证据；
-- **金融岗位线**：只写已核实的四类岗位族——风险管理/模型验证、金融基础设施/数据治理、ALM/固收/金融市场、金融科技/风险产品。
-
-简历和面试材料会把“代码中已有”“本人已手算验收”“规划中”分开。AI 辅助开发不自动等于本人掌握：只有完成手算、改参数、阅读失败例并留下记录后，才可以使用强化版表述。
-
-## 快速开始
-
-环境要求为 Python 3.10 或更高版本。默认运行路径依赖项目声明的 `numpy` 和 `pandas`，测试使用 Python 标准库 `unittest`。在仓库根目录执行：
+环境要求 Python 3.10+。在仓库根目录运行：
 
 ```bash
 python -m pip install -e .
-PYTHONDONTWRITEBYTECODE=1 python -m unittest discover -s tests -v
-python -m finpilot demo --ticker AAPL --as-of 2025-12-31 --output reports/demo
-python -m finpilot eval --output /tmp/finpilot-eval.json
-python -m finpilot export --output /tmp/FinPilot演示工作台.html
-python -m finpilot agent --question '请分析信用压力下的预期损失和久期风险'
+python -m unittest discover -s tests -v
+python -m finpilot research --as-of 2025-12-31 --method equal
+python -m finpilot export --output FinPilot演示工作台.html
+python -m finpilot serve
 ```
 
-`AAPL` 和 `MSFT` 只是兼容 CLI 的输入；fixture 返回的观察值始终标记为内部 `DEMO`，并明确写明是 synthetic。它们不会变成真实证券数据。
+不启动服务也能完整体验内置案例：双击 `index.html` 或 `FinPilot演示工作台.html`，选择“新手引导”，点击“运行投资研究”，切换 2025 最新快照、2022 加息周期、2020 疫情后恢复，查看候选、组合、压力与公开 S&P 500 月度案例。静态页面的参数只使用内置可复现快照，不会显示“已重算”的假结果；需要上传自己的 CSV、修改任意参数或运行 doctor 时，再启动本机服务。
 
-一次 demo 会写出 JSON 运行记录和 Markdown 研究备忘录。复核入口包括：
+然后打开 `http://127.0.0.1:8765`。建议第一次按这个顺序演示：
+```text
+投资研究 → 运行研究
+         → 股票池：看通过/排除原因
+         → 组合：看权重上限与现金
+         → 压力：看三种风险情景
+         → 导出 JSON / 查看证据账本
+信用风险 → 拖动压力参数，解释 EAD 加权 EL
+评测与边界 → 注入失败案例，说明系统为什么拒绝
+```
 
-- `source` / `source_locator`：来源与定位；
-- `raw_ref`：对原始记录的确定性哈希引用；
-- `effective_at` / `filed_at`：可见时间与披露时间；
-- `formula_refs`：派生数字所使用的公式说明；
-- `evidence_ids` / `evidence_ledger`：叙述 claim 的证据链接；
-- `trace`：确定性研究图的节点状态。
+也可以导出一个不需要启动 Python 服务的静态页面：
 
-这些字段描述合成 fixture，不是 AAPL 的真实市场或财务数据。
+```bash
+python -m finpilot export --output /tmp/FinPilot演示工作台.html
+open /tmp/FinPilot演示工作台.html
+```
 
-## 现有代码路径
+## 岗位能力训练工作台
+
+仓库还包含一个独立的中文训练工具 [`金融风险能力训练工作台.html`](金融风险能力训练工作台.html)。它把风险管理、金融工程、SQL/Python 练习、项目证据包和面试演练串成八周训练路线，使用离线合成数据，不需要联网即可双击打开。工作台会明确区分“练习结果”和“真实生产经验”，并提供本机 SQLite starter 练习与进度 JSON 导入/导出。
+
+建议使用顺序：风险实验室 → 金工计算台 → SQL 数据练习 → 本机练习 → 项目证据包 → 面试演练。合成数据和训练结果不能写成真实金融机构生产项目或投资业绩。
+
+## 导入自己的研究快照
+
+本地服务支持 `POST /api/investment`，工作台提供 CSV 文件入口。股票财务 CSV 的表头必须是：
 
 ```text
-FixtureProvider.load(ticker, as_of)
-        ↓
-frames(observations)
-        ↓
-market_features + fundamental_features
-        ↓
-risk_snapshot + composite_score
-        ↓
-run_momentum_backtest + leakage_check
-        ↓
-run_research_graph（证据 claim、skeptic flags、trace）
-        ↓
-run_fixture → JSON / Markdown memo
+symbol,name,sector,currency,price_as_of,price,eps_ttm,revenue_growth,operating_margin,fcf_margin,debt_to_equity,period_end,filed_at,source
 ```
 
-关键约束：
+日线价格 CSV 的表头必须是：
 
-- fixture 使用固定种子，数据先生成完整 corpus，再按截止日过滤；改变 `as_of` 不会改变过去行的数值；
-- 市场数据按 `effective_at <= as_of`，财务数据按 `filed_at <= as_of`；
-- 市场回测在收盘产生信号，下一收盘执行，新仓位从执行后的下一段收益开始计入；
-- Sharpe 使用日收益的算术平均/样本标准差并乘以 `sqrt(252)`，风险自由利率为 0 的教育性假设；
-- 信用损失使用 `sum(EAD × PD × LGD) / sum(EAD)`，不是简单平均 PD；
-- 未知单位、日期无效、证据缺失、未来观察或不兼容输出应进入 `review`、`blocked` 或 `insufficient_data`，而不是猜测。
+```text
+date,symbol,adj_close
+```
 
-### 连接器与服务路径
+所有比例用小数，例如 `0.18` 表示 18%；`adj_close` 要明确是用户选择的复权价格。系统限制 CSV 体积、行数、代码格式、重复日期、正价格、单币种和披露日期口径。未来披露或价格不会被偷偷用于历史截止日；缺失字段会进入排除或风险不可计算，而不是补 0。
 
-`integrations.py`、`evaluation.py`、`runtime.py` 和 `server.py` 已实现并有离线测试。`python -m finpilot eval` 运行的是确定性验收，不是模型 benchmark；`python -m finpilot serve` 只绑定 `127.0.0.1`，默认使用合成 fixture。MCP client 与 LLM client 是显式 opt-in 的安全边界，真实 SEC/Yahoo MCP、真实模型和数据条款仍需单独审查、安装、映射和联调。`python -m finpilot agent --question '信用压力下的预期损失'` 默认使用离线规则路由；只有明确传 `--live-model` 且配置本地/远程 endpoint 才会发模型请求。
+用户导入的数据标签是“用户提供，未独立核验”。`source` 字段用于血缘记录，不代表 FinPilot 已经替用户验证来源真实性、供应商许可或财务口径。
 
-`risk.py` 的实验函数与 `run_fixture` 主链路已经连接：默认 demo 包含信用压力、固收和期权工具结果；`--no-risk-lab` 可在只需要研究回放时关闭信用组合。
+## 可选真实数据方式（默认不联网）
 
-## fail-closed 原则
+FinPilot 现在支持三种数据方式，但默认仍是安全、离线、可复现：
 
-FinPilot 不以“尽可能给一个答案”为成功标准。以下任一情况都应停止或降级：
+1. **本地授权 CSV**：沿用上面的 `stocks.csv` / `prices.csv` 合同，推荐先运行 `data doctor`，再用 `research --stocks ... --prices ...`。真实输入仍标记为未独立核验。
+2. **显式 provider fetch**：`yfinance` 与 SEC raw companyfacts 适配器只在 `fetch` 命令中延迟导入/请求；必须明确 `--allow-network` 和 `--accept-terms`。缺依赖、网络失败、日期/单位/响应错误都会清晰失败，绝不静默回退为合成数据。输出是 `real_user_fetch`，不是 `verified`。
+3. **版本化案例包**：`examples/real_cases/` 只有案例元数据模板，没有精确行情数字。四个案例都标记 `data_status=user_snapshot_required`，需要研究者提供有权使用的快照。
 
-- 单位未知、币种不明，或百分比/小数含义无法确认；
-- `effective_at`、`filed_at`、`as_of` 无法解析，或观察值在截止日之后；
-- 工具返回字段缺失、类型不兼容、来源不可追溯；
-- claim 没有 evidence ID，或 LLM 输出没有通过结构校验；
-- 回测执行日不严格晚于信号日；
-- 结果需要用缺失值填补、隐式重命名或模型猜测才能成立。
+离线检查和显式 fetch 示例见 [`docs/data-sources.md`](docs/data-sources.md)。普通安装不安装 `yfinance`；如自行安装，使用可选依赖 `market-data`。本次仓库验证不下载任何外部数据。
 
-fail-closed 的代价是更频繁地要求人工复核；这比在金融语境中制造虚假的确定性更可接受。
+## LLM：锦上添花，不是依赖
 
-## 面试与求职使用边界
+不配置 LLM 时，本地确定性核心仍可完成数据校验、候选筛选、组合权重、现金保留、共同日期压力、风险门禁和研究备忘录。这样设计是为了让金融数字可重复、让用户不必上传敏感数据，也让面试官能看到产品价值不依赖“模型说得像不像”。
 
-推荐把项目讲成“证据优先的金融 AI 产品工程问题”，不要讲成“会选股的机器人”。
+接入自己的 OpenAI-compatible endpoint：
 
-- **90 秒**：讲问题、约束、确定性核心、point-in-time 和当前未验证边界；
-- **5 分钟**：展开单位口径、回测滞后、fail-closed、证据台账、成本安全和验证计划；
-- **深挖**：能手算一个收益/损失/债券价格例子，解释为什么回测不是 alpha 证明，并展示一次改参数或失败例复盘。
+```bash
+export FINPILOT_LLM_ENDPOINT=http://127.0.0.1:11434/v1
+export FINPILOT_LLM_MODEL=你的本地模型名
+export FINPILOT_LLM_API_KEY=
+python -m finpilot agent --live-model --question "请解释为什么有些公司被排除，并列出人工核查问题"
+```
 
-若项目使用 AI 辅助开发，基础版简历应明确说明辅助事实，不把未完成的用户访谈、团队领导、商业部署、真实模型结果或外部连接器写成已完成。强化版只有在本人完成验收日志后才能启用。
+LLM 允许做自然语言问题理解、工具路由、候选 finding 相关性排序、研究追问和摘要润色；LLM 不允许计算或修改 PE、收益、Expected Loss、组合权重、压力损失、点时判断或 evidence ID。工作台中的“LLM 可选增强”先展示发送摘要，用户确认后才调用模型；默认不发送 CSV 原文、私有文件或密钥。
 
-详细回答、金融算例、14 天证据练习和实验日志见 [`docs/interview-playbook.md`](docs/interview-playbook.md)。岗位族映射见 [`docs/capability-map.md`](docs/capability-map.md)，当前与条件式简历版本见 [`docs/resume.md`](docs/resume.md)。
+## 最小产品架构
 
-## 产品与验证边界
+```text
+本地 CSV / 合成 fixture
+        ↓
+字段、币种、日期、披露时点校验
+        ↓
+投资筛选：PE / 增长 / 利润率 / FCF / 杠杆 / 数据完整性
+        ↓
+组合构建：等权 / 得分 / 低波倒数 + 单票上限 + 现金
+        ↓
+共同日期风险：参数压力 / 历史20日 / 相关性压力
+        ↓
+证据账本 + 研究备忘录 + 可复现 JSON
+        ↑
+可选 LLM：只做问题理解、相关性排序和表达增强
+```
 
-当前没有外部用户、没有商业部署、没有真实 live data、没有真实 model key，也没有已验证的留存、准确率、节省时间、收入或付费指标。`docs/user-validation.md` 提供的是**拟执行**的访谈协议、事件字典、指标定义和 SQL 草案，不是已完成研究。
+核心模块包括：`investment.py` 负责用户数据入口与股票研究；`portfolio.py` 负责长仓权重、硬性 cap、现金、行业集中度和共同日期压力；`data.py` 与 `analytics.py` 负责原始观察、点时可见性和确定性指标；`risk.py` 负责信用/固收/期权算例；`integrations.py` 负责受限 MCP 与 OpenAI-compatible 边界；`advisor.py` 负责 LLM 发送前预览和相关性增强；`workbench.html` 是用户演示界面。
 
-任何实验日志必须至少记录：日期、代码版本、输入 manifest、参数、预期、手算结果、程序结果、差异、失败样本、本人结论和下一步。没有日志就不要把数字写入简历或面试答案。
+## 数据与风险口径
+
+报告期结束日不等于数据可用日。财务字段必须带 `period_end` 与 `filed_at`；研究系统只允许使用截止日已经披露的数据。日线风险必须使用真实日期交集，不能把不同标的的第 1 行、第 2 行机械拼在一起。共同样本不足 40 个观测时，参数压力会返回 `insufficient`。
+
+组合压力是当前权重的风险诊断：参数情景用共同日期日收益协方差，历史情景用同一实际日期区间逐日应用当前权重并复合，不模拟调仓成本或成交可行性。它不是校准 VaR，不是历史可交易回测，也不证明策略未来收益。
+
+信用模块的 EL 是 `sum(EAD × stressed_PD × stressed_LGD) / sum(EAD)`；固收模块的 DV01 是收益率上移 1bp 的价格变化；这些模块用于能力训练和模型治理讨论，不是 IFRS 9、资本计量或监管审批系统。
+
+## AI 产品岗位映射
+
+这个项目能展示的问题拆解是：把“请分析一下这批公司”拆成数据合同、筛选门禁、组合约束、风险情景、证据展示和人工复核。可展示的产品能力包括用户流程设计、结构化工具合同、可观察 trace、失败态、LLM 权限边界、成本/时延入口、离线评测和用户数据隐私。
+
+面试中不要只讲“我用了 Agent”。应该讲：我有意把金融数字从模型输出中拿出来，让模型只能引用已存在的 finding；如果数据缺失、日期未来、来源不明或风险样本不足，系统宁可返回 review/insufficient，也不制造完整但不可靠的答案。
+
+## 金融岗位映射
+
+申请风险管理/模型验证：讲 EAD 加权 EL、PD/LGD 压力、时间切分、AUC/Brier/ECE 以及“合成指标不等于真实校准”。申请金融基础设施/数据治理：讲单位、币种、`filed_at`、`price_as_of`、来源 hash、CSV 行级错误和 fail-closed。申请 ALM/固收/金融市场：讲现金流折现、duration、convexity、DV01 和利率冲击的适用边界。申请金融科技/风险产品：讲筛选→组合→压力的任务闭环、解释性 UI、人工复核和证据导出。
+
+## STAR 叙事
+
+**Situation：** 金融研究工具常把检索、数字计算、组合配置和叙述混在一起，用户难以判断一个候选是因为真的不符合条件，还是因为数据不足；同时，直接依赖 LLM 会带来数字、日期和引用不可审计的问题。
+
+**Task：** 我希望做一个本地可运行、无需大模型也能完成核心研究任务的金融 Agent 产品，并让它同时能够训练 AI 产品、风险管理、数据治理和固收岗位需要的能力。
+
+**Action：** 我设计了点时数据合同和 CSV 入口；使用固定规则做 PE、收入增长、利润率、自由现金流率和杠杆筛选；把评分定义为可解释的绝对阈值组合，不把它包装成预测概率；用长仓、单票上限和现金保留规则构建组合；用共同日期收益做参数、历史和相关性压力；将每个结论绑定到 evidence ledger；加入 MCP/LLM 的白名单、输出 schema、调用预算和发送前预览；用手算基准、本地回归测试（含 provider mock）和失败样本验收关键边界。
+
+**Result：** 当前版本可以在本地完成“股票池→筛选→组合→压力→备忘录”的可演示闭环，也保留信用风险、固收和期权模块；不需要 LLM 或外部数据服务即可运行。当前 demo 使用合成数据，外部用户验证、真实模型效果和 live provider 联调仍未完成（适配器仅经 mock 验收），因此不能把它写成真实投资业绩、alpha、监管验证或用户增长结果。
+
+## 当前可核验状态
+
+| 能力 | 当前状态 | 不能宣称 |
+| --- | --- | --- |
+| 投资研究 | 本地 CSV/合成数据、筛选、组合、共同日期压力和 memo 已实现 | 真实证券推荐、alpha、未来收益 |
+| 风险管理 | 合成贷款、PD/LGD/EAD、EL、时间切分指标 | IFRS 9、真实校准、监管审批 |
+| 固收/期权 | 价格、duration、convexity、DV01、BS/MC | 实盘定价、完整 ALM |
+| LLM | 可选受限路由和研究追问；默认不调用 | LLM 金融准确率、生产 Agent |
+| 数据连接 | 本地授权 CSV；可选 yfinance/SEC 显式 fetch；结果带 provenance 且未独立核验 | 已连接实时数据、数据许可、独立验证 |
+| 用户研究 | 协议和指标定义存在 | 外部用户、留存、节省时间 |
+
+## 开发与验证
+
+```bash
+PYTHONDONTWRITEBYTECODE=1 python -m unittest discover -s tests -v
+python -m finpilot research --as-of 2025-12-31
+python -m finpilot eval --output /tmp/finpilot-eval.json
+python -m finpilot export --output /tmp/FinPilot演示工作台.html
+```
+
+当前本地测试覆盖确定性市场/财务、回测、信用/固收/期权、MCP/LLM schema、CSV 导入、投资筛选、组合压力与 provider 的 mock 验收（延迟依赖、授权、日期边界、失败不回退和来源合同）。测试通过表示代码路径通过离线验收，不表示真实业务有效或已完成 live 联调。
 
 ## 安全与隐私
 
-禁止将以下内容提交到公开仓库：
+不要提交真实 API key、原始个人简历、客户数据、未公开访谈材料或私人金融 Agent 文档。不要把真实数据供应商的受限下载打包进仓库。工作台只绑定 loopback；工具调用只读、有限、显式 opt-in。
 
-- 真实模型 key、浏览器凭据和个人访问令牌；
-- 原始个人简历、客户数据、未公开访谈记录；
-- 私有的 `金融agent.docx` 或其摘录、截图、链接；
-- 未经授权的 SEC/Yahoo 原始下载和供应商受限数据。
+## 参考文档
 
-本项目文档不引用、不上传私有金融 agent 文档。外部模型路径未来只能收到经批准的合成或公开摘要；工具必须是只读白名单，并限制调用次数、返回大小和 token 数，不得授予 LLM 任意 shell、SQL 或网络执行权。
+- [`docs/product-v03.md`](docs/product-v03.md)：产品定位、使用场景、快速上手和功能边界
+- [`docs/data-contract.md`](docs/data-contract.md)：CSV 字段、点时规则、缺失与来源标签
+- [`docs/data-sources.md`](docs/data-sources.md)：离线 doctor、显式 fetch、provider 输出合同与复现边界
+- [`examples/real_cases/historical_reference_snapshots.md`](examples/real_cases/historical_reference_snapshots.md)：带来源的公共历史参考快照与案例边界
+- [`examples/real_cases/financial_casebook.md`](examples/real_cases/financial_casebook.md)：Apple、Microsoft、NVIDIA、WTI 财务/市场案例
+- [`docs/architecture.md`](docs/architecture.md)：数据、计算、Agent 和失败策略
+- [`docs/interview-playbook.md`](docs/interview-playbook.md)：AI 产品与金融岗位回答
+- [`docs/interview-v03.md`](docs/interview-v03.md)：投资研究主线的演示话术与深挖问题
+- [`docs/capability-map.md`](docs/capability-map.md)：岗位能力映射与 SQL/实验模板
+- [`docs/resume.md`](docs/resume.md)：当前可用和条件式简历版本
+- [`docs/integrations.md`](docs/integrations.md)：MCP/LLM 接入与安全边界
+- [`docs/advisor.md`](docs/advisor.md)：LLM 可选增强、发送内容和模型边界
+- [`docs/model-card.md`](docs/model-card.md)：数据、方法和限制
 
-安全问题不要在公开 issue 中粘贴密钥、个人信息或客户材料；请使用维护者的私下安全渠道。普通 bug 和功能建议使用 `.github/ISSUE_TEMPLATE/` 模板。
+参考入口：
 
-## 参考入口
+- [SEC EDGAR API documentation](https://www.sec.gov/edgar/sec-api-documentation)
+- [Model Context Protocol specification](https://modelcontextprotocol.io/specification/latest)
+- [TradingAgents](https://github.com/TauricResearch/TradingAgents)
+- [OpenBB](https://github.com/OpenBB-finance/OpenBB)
+- [Qlib](https://github.com/microsoft/qlib)
 
-以下链接只是公开协议或项目设计的核验入口，不是 FinPilot 的依赖声明，也不保证数据条款、许可或效果：
+## License
 
-- SEC EDGAR API 文档：<https://www.sec.gov/edgar/sec-api-documentation>
-- Model Context Protocol 规范：<https://modelcontextprotocol.io/specification/latest>
-- TradingAgents 公开仓库：<https://github.com/TauricResearch/TradingAgents>
-- OpenBB 公开仓库：<https://github.com/OpenBB-finance/OpenBB>
-- Qlib 公开仓库：<https://github.com/microsoft/qlib>
-
-## 许可证
-
-项目使用 MIT License，详见 [`LICENSE`](LICENSE)。许可证不改变数据提供商条款、模型服务条款或使用者对金融决策的责任。
-
-更多产品、架构、发布和模型边界说明见：
-
-- [`docs/product.md`](docs/product.md)
-- [`docs/architecture.md`](docs/architecture.md)
-- [`docs/publish.md`](docs/publish.md)
-- [`docs/model-card.md`](docs/model-card.md)
+MIT License。许可证不改变数据提供商条款、模型服务条款或使用者对金融决策的责任。

@@ -1,81 +1,94 @@
 # FinPilot
 
-FinPilot is an evidence-first workspace for financial risk and research. It keeps point-in-time visibility, formulas, citations, risk gates, and reproducible run records in one workflow. The goal is not to replace an analyst or risk professional with a trading answer. The goal is to make every reviewable statement answer four questions: when was the data visible, how was it calculated, what supports it, and where should the workflow stop for human review?
+> Screen a research universe, build a capped long-only portfolio, stress it on common-date returns, and export an evidence-linked memo — locally, reproducibly, without an LLM.
 
-The default path is offline and deterministic. Prices, filing-like fields, and loan samples in the fixture are synthetic. Passing `AAPL` or `MSFT` to the CLI does not turn the fixture into real security data. The repository does not enable network access by default, does not read secrets by default, and did not connect a local SEC or Yahoo MCP in this session. The current baseline includes point-in-time data, market/fundamental analysis, lagged backtesting, credit stress, model-validation readouts, fixed-income/option tools, strict JSON, an evidence ledger, a bounded Agent path, offline evaluation, a localhost-only server, and an exportable workbench. Live providers and live models remain explicit opt-in integrations.
+FinPilot is a local-first financial research and risk workbench. Its primary user flow is investment research: validate a cutoff date and user-provided snapshot, screen candidates under explicit financial rules, build a transparent portfolio with a hard position cap and cash, run common-date stress diagnostics, and export a memo with evidence and assumptions. Credit risk, fixed-income, and option tools support risk/model-validation, data-governance, ALM/fixed-income, fintech, and AI-product interview tracks.
 
-This is not investment advice, a production risk approval system, an execution system, or a regulatory model. Numeric examples are educational assumptions. No return, risk, latency, cost, accuracy, or user metric should be presented as measured unless it comes from an actual run log or report. Commercial deployment and training have not been completed, and the project makes no promise about GitHub stars, hiring outcomes, or coverage of every job description.
+The bundled demo uses synthetic `DEMO01`–`DEMO08` entities. They are not real securities, and no result is investment advice or evidence of future returns.
 
-## Why FinPilot exists
-
-Financial research tools often mix retrieval, numerical computation, and narrative generation. That makes it difficult to tell whether a number is an observation, a derived value, or a language-model statement. Filing dates and reporting periods can be confused, and a backtest can accidentally trade on the same bar that created its signal. FinPilot takes the opposite approach: deterministic rules run first, an optional language model handles bounded explanation work second, and unverifiable facts, units, dates, or tool outputs fail closed instead of being guessed.
-
-The project supports two job-search tracks. The AI product track requires concrete evidence for interviews, PRDs, event SQL, frozen evaluations, RAG/agent tools, cost, security, and cross-functional delivery. The finance track is deliberately not described as a confirmed list of quant-investment roles. The verified role families are risk management and model validation; financial infrastructure and data governance; ALM, fixed income, and financial markets; and fintech and risk products. FinPilot materials map transferable capabilities to those families and state which claims still require personal hand calculation, parameter changes, and review of failure cases.
-
-## Quick start
-
-Python 3.10 or newer is required. Runtime dependencies are the `numpy` and `pandas` declared by the project; tests use the standard-library `unittest`. From the repository root:
+## Five-minute quick start
 
 ```bash
 python -m pip install -e .
 python -m unittest discover -s tests -v
-python -m finpilot demo --ticker AAPL --as-of 2025-12-31 --output reports/demo
-python -m finpilot eval --output /tmp/finpilot-eval.json
-python -m finpilot export --output /tmp/FinPilot-workbench.html
-python -m finpilot agent --question 'credit stress loss and duration risk'
+python -m finpilot research --as-of 2025-12-31 --method equal
+python -m finpilot export --output FinPilot-workbench.html
+python -m finpilot serve
 ```
 
-The demo writes a JSON run record and a Markdown research memo. The review entry points are `source`, `raw_ref`, `effective_at`, `filed_at`, `formula_refs`, `evidence_ids`, and `trace`. They describe synthetic fixture data, not real AAPL market or financial data.
+Open `http://127.0.0.1:8765`. The Investment Research page walks through: screening, exclusion reasons, portfolio weights/cash, three stress scenarios, evidence, and export. The workbench also has Credit Risk, Fixed Income & Options, Evaluation, and Interview Training pages.
 
-The current CLI commands are real, offline-tested paths. `eval` is a deterministic acceptance suite, not a model benchmark; `serve` binds to `127.0.0.1` and uses synthetic fixture data; `agent` uses a transparent offline router by default. Passing `--live-model` is explicit opt-in and requires a configured endpoint. No SEC/Yahoo MCP has been installed or connected in this delivery.
+## Local data import
 
-## Workflow
+`stocks.csv` must have exactly:
 
-A run should first fix the ticker, `as_of`, mode, and data manifest. The data layer preserves the observation period, filing time, effective time, unit, source locator, and raw reference. The analytics layer reads only facts visible by the cutoff. Deterministic rules compute market features, fundamental features, a risk snapshot, and a descriptive composite score. The backtest uses an explicit lagged execution model and reports transaction costs, a benchmark, and a leakage check. The evidence layer binds narrative claims to evidence IDs. Only then may a report be rendered or an optional LLM perform constrained wording work.
+```text
+symbol,name,sector,currency,price_as_of,price,eps_ttm,revenue_growth,operating_margin,fcf_margin,debt_to_equity,period_end,filed_at,source
+```
 
-`fail-closed` is the default. Unknown units, unparseable dates, incompatible tool output, missing evidence, unvalidated model output, or an execution date no later than the signal date should produce `review`, `blocked`, or `insufficient_data`; they should not trigger imputation, guessed field meanings, or false precision.
+`prices.csv` must have exactly:
 
-## Capability and status
+```text
+date,symbol,adj_close
+```
 
-| Capability | Public wording now | Do not claim |
-| --- | --- | --- |
-| Offline fixture, evidence fields, market/fundamental features | Baseline code path and readable contracts | Real securities, real filings, or user validation |
-| Momentum backtest | Educational next-observation execution baseline | Predictive alpha, tradable returns, or investment advice |
-| Credit stress, loan loss, bond sensitivity | Implemented deterministic tools, integrated in the fixture pipeline and covered by independent hand-check tests | IFRS 9, regulatory capital, real calibration, or approval conclusions |
-| RAG/agent and MCP | Bounded offline tool-selection path, optional two-call model route, and read-only MCP transport; no live SEC/Yahoo provider connected | Installed MCPs, live data access, or production integration |
-| LLM | Optional structured explanation path separated from deterministic outputs | Letting an LLM perform arithmetic, point-in-time checks, or safety decisions |
-| User research and product metrics | Interview protocol, event dictionary, and SQL drafts | External interviews, retention, accuracy, or time-saved metrics already achieved |
+Ratios are decimal values, prices must be positive, and a file must use one currency. Future filings/prices, stale snapshots, duplicate rows, invalid units, malformed dates, and missing metrics fail closed or become explicit exclusions. An imported file is labelled “user provided, not independently verified”; the `source` field is provenance, not proof of authenticity.
 
-TradingAgents, OpenBB, and Qlib are public design references, not FinPilot runtime dependencies. FinPilot does not copy their code. Protocol capabilities should be implemented only when needed, and “referenced” must not be written as “installed” or “connected.”
+Synthetic examples are in [`examples/`](examples/). The import contract is documented in [`docs/data-contract.md`](docs/data-contract.md).
+
+Three real-data workflows are available without changing the offline default: authorized local CSV (`data doctor` then `research --stocks ... --prices ...`), explicit opt-in provider fetch (lazy yfinance or raw SEC companyfacts), and versioned case templates in [`examples/real_cases/`](examples/real_cases/). Fetch requires both `--allow-network` and `--accept-terms`, never silently falls back to fixtures, and returns `real_user_fetch` / `verified=false`. Missing dependencies are reported rather than installed.
+
+The repository also includes a small public historical reference snapshot and an official-public financial casebook for Apple FY2024, Microsoft FY2024, NVIDIA FY2024, and WTI April 2020. These are citation-bearing case facts and questions, not complete company datasets, real-time data, or investment recommendations.
+
+## Why the LLM is optional
+
+The deterministic core completes validation, financial screening, portfolio construction, cash preservation, common-date stress, evidence, and memo generation without an API key. An optional OpenAI-compatible endpoint can help understand a question, select existing findings, create diligence questions, and improve wording. It cannot calculate or change PE, returns, expected loss, weights, point-in-time gates, or evidence IDs. The workbench previews the summary before sending it; raw CSV files and keys are not sent by default.
+
+```bash
+export FINPILOT_LLM_ENDPOINT=http://127.0.0.1:11434/v1
+export FINPILOT_LLM_MODEL=your-local-model
+export FINPILOT_LLM_API_KEY=
+python -m finpilot agent --live-model --question "Explain exclusion reasons and diligence questions"
+```
+
+## Architecture
+
+```text
+CSV / synthetic fixture
+        ↓
+field, currency, date, filing and provenance checks
+        ↓
+financial screen: PE / growth / margins / leverage / completeness
+        ↓
+portfolio: equal / score / inverse-vol + hard cap + cash
+        ↓
+common-date risk: parametric / historical / correlation stress
+        ↓
+evidence ledger + JSON + research memo
+        ↑
+optional LLM: question understanding and bounded explanation only
+```
+
+Python modules include `investment.py` for the user-facing CSV workflow, `portfolio.py` for long-only weights and common-date stress, `data.py`/`analytics.py` for observations and point-in-time calculations, `risk.py` for credit/fixed-income/options, `integrations.py` for opt-in MCP/LLM transport, and `advisor.py` for previewed LLM enhancement.
 
 ## Interview framing
 
-Frame the project as an evidence-first financial AI product-engineering problem, not as a stock-picking robot. A 90-second answer should establish the problem, constraints, deterministic core, and validation boundary. A five-minute answer can then explain point-in-time visibility, unit discipline, backtest lag, fail-closed behavior, cost, and security. Every number must come from a real run or experiment log. If AI assisted development, the basic resume version should say so accurately and state that the candidate personally checked arithmetic, changed parameters, and reviewed failure cases. Planned risk experiments, interviews, team leadership, or live model results must not appear as completed experience before personal acceptance.
+For AI product roles, present FinPilot as a product decision: a narrow research task, explicit states, deterministic tools, evidence UX, LLM boundaries, failure handling, privacy, and evaluation. For finance roles, explain EAD-weighted EL, the difference between reporting period and filing date, PE/quality/growth rules, hard position caps, common-date covariance, duration/convexity/DV01, and why synthetic metrics do not prove calibration.
 
-See [`docs/interview-playbook.md`](docs/interview-playbook.md) for detailed answers, finance examples, a fourteen-day practice plan, and daily evidence templates. See [`docs/capability-map.md`](docs/capability-map.md) for the role-family mapping.
+Use STAR: the situation was that research tools mix retrieval, arithmetic, portfolio rules, and narrative; the task was to build a local reproducible workflow; the actions were data contracts, fail-closed screening, transparent allocation, dated stress, evidence, and bounded LLM routing; the result is a runnable local workflow with tests and explicit limitations. Do not claim live securities, alpha, external users, production deployment, IFRS 9 validation, or model benchmark results.
 
-## Security and privacy
+## Status and limitations
 
-Do not commit real model keys, original personal resumes, private financial-agent documents, client data, or unpublished interview notes. An external model path may receive only approved synthetic or public summaries; it must not receive keys, browser credentials, or unapproved raw documents. Tool access must be read-only and bounded by allowlists, call limits, response limits, and token limits. An LLM must not receive arbitrary shell, SQL, or network execution authority.
+Implemented and locally tested: synthetic investment research, CSV validation, portfolio cap/cash, common-date stress, credit stress, fixed-income/options calculations, bounded MCP/LLM schemas, evidence, localhost server, and standalone workbench. The test suite is an offline engineering check, not a user study or model benchmark. Optional yfinance/SEC adapters are covered by injected offline mocks, not live integration tests. Accounting restatements, corporate actions, liquidity, transaction-cost backtesting, external users, source licensing, and commercial deployment require separate work.
 
-Do not paste secrets, personal information, or client material into a public issue. Use the issue templates for ordinary bugs and feature requests, and use a private maintainer channel for sensitive reports.
+See [`docs/product-v03.md`](docs/product-v03.md), [`docs/data-contract.md`](docs/data-contract.md), [`docs/architecture.md`](docs/architecture.md), [`docs/interview-playbook.md`](docs/interview-playbook.md), [`docs/interview-v03.md`](docs/interview-v03.md), [`docs/capability-map.md`](docs/capability-map.md), [`docs/resume.md`](docs/resume.md), [`docs/integrations.md`](docs/integrations.md), [`docs/advisor.md`](docs/advisor.md), and [`docs/model-card.md`](docs/model-card.md).
 
-## Reference entry points
+## Safety
 
-The links below are official entry points for independently checking protocols or public project designs. They are not dependency declarations and do not guarantee data terms, licenses, or performance.
+Do not commit API keys, personal resumes, private interview material, client data, or restricted provider downloads. The prototype binds to loopback, defaults to offline data, uses read-only allowlists, and does not grant an LLM shell, SQL, or arbitrary network access.
 
-SEC EDGAR API documentation: <https://www.sec.gov/edgar/sec-api-documentation>.
+## Public references
 
-Model Context Protocol specification: <https://modelcontextprotocol.io/specification/latest>.
+[SEC EDGAR API documentation](https://www.sec.gov/edgar/sec-api-documentation) · [MCP specification](https://modelcontextprotocol.io/specification/latest) · [TradingAgents](https://github.com/TauricResearch/TradingAgents) · [OpenBB](https://github.com/OpenBB-finance/OpenBB) · [Qlib](https://github.com/microsoft/qlib)
 
-TradingAgents public repository: <https://github.com/TauricResearch/TradingAgents>.
-
-OpenBB public repository: <https://github.com/OpenBB-finance/OpenBB>.
-
-Qlib public repository: <https://github.com/microsoft/qlib>.
-
-## License
-
-This project uses the MIT License; see [`LICENSE`](LICENSE). The license does not override data-provider terms, model-service terms, or the user's responsibility for financial decisions.
-
-For architecture, release, and model-boundary details, see [`docs/architecture.md`](docs/architecture.md), [`docs/publish.md`](docs/publish.md), and [`docs/model-card.md`](docs/model-card.md).
+MIT License. Data-provider, model-provider, and financial-decision responsibilities remain separate from the repository license.

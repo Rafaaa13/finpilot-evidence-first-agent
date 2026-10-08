@@ -1,0 +1,114 @@
+{
+  "schema_version": "financial-casebook-v1",
+  "data_status": "official_public_snapshot",
+  "warning": "These are official public financial-statement snapshots for case analysis, not a complete market dataset, not investment advice, and not independently audited by FinPilot.",
+  "cases": [
+    {
+      "case_id": "apple_fy2024_profit_quality",
+      "title": "Apple FY2024: one-time tax charge and profit-quality questions",
+      "company": "Apple Inc.",
+      "period": "FY2024",
+      "currency": "USD_millions",
+      "metrics": {
+        "total_net_sales": 391035,
+        "net_income": 93736,
+        "income_tax_provision": 29749,
+        "one_time_tax_charge_approx": 10200
+      },
+      "derived_metrics": {
+        "net_margin": 0.2397,
+        "one_time_tax_charge_as_pct_net_income": 0.1088
+      },
+      "questions": [
+        "How should an analyst separate recurring profitability from a one-time tax item?",
+        "Which additional segment, product, buyback, cash-flow and accounting-note evidence is required before valuing the company?",
+        "Can net income be compared across years without adjusting for the one-time item?"
+      ],
+      "source_urls": [
+        "https://www.apple.com/newsroom/pdfs/fy2024-q4/FY24_Q4_Consolidated_Financial_Statements.pdf",
+        "https://www.apple.com/ee/newsroom/2024/10/apple-reports-fourth-quarter-results/"
+      ],
+      "source_note": "Official Apple FY2024 consolidated financial statements and newsroom release. Derived metrics are FinPilot calculations from the displayed official amounts.",
+      "data_status": "official_public_snapshot",
+      "caveat": "This is a financial-statement case, not a complete equity research snapshot; no price, shares, segment forecast or valuation is embedded."
+    },
+    {
+      "case_id": "microsoft_fy2024_operating_leverage",
+      "title": "Microsoft FY2024: growth and operating leverage",
+      "company": "Microsoft Corporation",
+      "period": "FY2024 ended June 30, 2024",
+      "currency": "USD_millions",
+      "metrics": {
+        "revenue": 245122,
+        "operating_income": 109433
+      },
+      "derived_metrics": {
+        "operating_margin": 0.4464
+      },
+      "questions": [
+        "How much of operating-margin improvement is recurring versus mix, cloud scale or accounting presentation?",
+        "What additional segment revenue, operating income, capex and cash-flow data is needed for a research view?",
+        "How should a high operating margin be interpreted alongside growth investment and competition?"
+      ],
+      "source_urls": [
+        "https://www.microsoft.com/en-us/Investor/earnings/FY-2024-Q4/income-statements",
+        "https://www.microsoft.com/en-us/investor/earnings/fy-2024-q4/press-release-webcast",
+        "https://www.microsoft.com/investor/reports/ar24/index.html"
+      ],
+      "source_note": "Official Microsoft FY2024 income statement and annual-report entry points. Derived operating margin is revenue divided by operating income.",
+      "data_status": "official_public_snapshot",
+      "caveat": "This is not a complete stock screen or valuation; it deliberately omits price, EPS, shares and future estimates."
+    },
+    {
+      "case_id": "nvidia_fy2024_growth_quality",
+      "title": "NVIDIA FY2024: exceptional growth, margin and concentration questions",
+      "company": "NVIDIA Corporation",
+      "period": "FY2024",
+      "currency": "USD_billions",
+      "metrics": {
+        "revenue": 60.922,
+        "operating_income": 32.972,
+        "net_income": 29.760
+      },
+      "derived_metrics": {
+        "operating_margin": 0.5414,
+        "net_margin": 0.4885
+      },
+      "questions": [
+        "How should an analyst test whether exceptional growth and margins can persist?",
+        "What customer, product, geography, supply-chain and capex concentration checks are required?",
+        "How sensitive is a valuation to a normalization of growth and margins?"
+      ],
+      "source_urls": [
+        "https://nvidianews.nvidia.com/news/nvidia-announces-financial-results-for-fourth-quarter-and-fiscal-2024"
+      ],
+      "source_note": "Official NVIDIA fiscal 2024 GAAP figures. Derived margins are FinPilot calculations from the displayed official amounts.",
+      "data_status": "official_public_snapshot",
+      "caveat": "The case is designed to prompt diligence, not to imply a buy/sell conclusion or future growth rate."
+    },
+    {
+      "case_id": "wti_april_2020_negative_price",
+      "title": "WTI April 2020: negative futures price and contract mechanics",
+      "instrument": "WTI crude oil futures, May 2020 contract",
+      "date": "2020-04-20",
+      "currency": "USD_per_barrel",
+      "metrics": {
+        "close": -37.63,
+        "intraday_low": -40.32
+      },
+      "questions": [
+        "Why can a futures contract trade below zero when physical storage is constrained?",
+        "How should contract expiry, liquidity, margin and roll mechanics be separated from spot fundamentals?",
+        "What risk controls would a portfolio or product need before exposing users to futures data?"
+      ],
+      "source_urls": [
+        "https://www.eia.gov/TODAYINENERGY/detail.php?id=43875",
+        "https://www.eia.gov/TODAYINENERGY/detail.php?id=43495",
+        "https://www.eia.gov/dnav/pet/hist/RCLC1D.htm"
+      ],
+      "source_note": "US Energy Information Administration explains the negative close, storage constraints, low liquidity and approaching contract expiration.",
+      "data_status": "official_public_snapshot",
+      "caveat": "A single futures settlement is not a stock price, spot price, or investable strategy result."
+    }
+  ]
+}

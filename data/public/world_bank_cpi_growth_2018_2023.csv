@@ -1,0 +1,25 @@
+dataset_id,country,iso3,year,inflation_cpi_pct,source_url,snapshot_updated
+world_bank_cpi_growth,United States,USA,2018,2.44258329692817,https://api.worldbank.org/v2/country/USA;CHN;JPN;DEU/indicator/FP.CPI.TOTL.ZG?date=2018:2023&format=json&per_page=30,2026-07-13
+world_bank_cpi_growth,United States,USA,2019,1.81221007526021,https://api.worldbank.org/v2/country/USA;CHN;JPN;DEU/indicator/FP.CPI.TOTL.ZG?date=2018:2023&format=json&per_page=30,2026-07-13
+world_bank_cpi_growth,United States,USA,2020,1.23358439630629,https://api.worldbank.org/v2/country/USA;CHN;JPN;DEU/indicator/FP.CPI.TOTL.ZG?date=2018:2023&format=json&per_page=30,2026-07-13
+world_bank_cpi_growth,United States,USA,2021,4.69785886363742,https://api.worldbank.org/v2/country/USA;CHN;JPN;DEU/indicator/FP.CPI.TOTL.ZG?date=2018:2023&format=json&per_page=30,2026-07-13
+world_bank_cpi_growth,United States,USA,2022,8.00279982052121,https://api.worldbank.org/v2/country/USA;CHN;JPN;DEU/indicator/FP.CPI.TOTL.ZG?date=2018:2023&format=json&per_page=30,2026-07-13
+world_bank_cpi_growth,United States,USA,2023,4.11633838374488,https://api.worldbank.org/v2/country/USA;CHN;JPN;DEU/indicator/FP.CPI.TOTL.ZG?date=2018:2023&format=json&per_page=30,2026-07-13
+world_bank_cpi_growth,Germany,DEU,2018,1.73216879766942,https://api.worldbank.org/v2/country/USA;CHN;JPN;DEU/indicator/FP.CPI.TOTL.ZG?date=2018:2023&format=json&per_page=30,2026-07-13
+world_bank_cpi_growth,Germany,DEU,2019,1.44565976888253,https://api.worldbank.org/v2/country/USA;CHN;JPN;DEU/indicator/FP.CPI.TOTL.ZG?date=2018:2023&format=json&per_page=30,2026-07-13
+world_bank_cpi_growth,Germany,DEU,2020,0.144877925813982,https://api.worldbank.org/v2/country/USA;CHN;JPN;DEU/indicator/FP.CPI.TOTL.ZG?date=2018:2023&format=json&per_page=30,2026-07-13
+world_bank_cpi_growth,Germany,DEU,2021,3.06666666666673,https://api.worldbank.org/v2/country/USA;CHN;JPN;DEU/indicator/FP.CPI.TOTL.ZG?date=2018:2023&format=json&per_page=30,2026-07-13
+world_bank_cpi_growth,Germany,DEU,2022,6.87257438551097,https://api.worldbank.org/v2/country/USA;CHN;JPN;DEU/indicator/FP.CPI.TOTL.ZG?date=2018:2023&format=json&per_page=30,2026-07-13
+world_bank_cpi_growth,Germany,DEU,2023,5.94643667725823,https://api.worldbank.org/v2/country/USA;CHN;JPN;DEU/indicator/FP.CPI.TOTL.ZG?date=2018:2023&format=json&per_page=30,2026-07-13
+world_bank_cpi_growth,Japan,JPN,2018,0.989094598021848,https://api.worldbank.org/v2/country/USA;CHN;JPN;DEU/indicator/FP.CPI.TOTL.ZG?date=2018:2023&format=json&per_page=30,2026-07-13
+world_bank_cpi_growth,Japan,JPN,2019,0.46877615938395,https://api.worldbank.org/v2/country/USA;CHN;JPN;DEU/indicator/FP.CPI.TOTL.ZG?date=2018:2023&format=json&per_page=30,2026-07-13
+world_bank_cpi_growth,Japan,JPN,2020,-0.024995834027731,https://api.worldbank.org/v2/country/USA;CHN;JPN;DEU/indicator/FP.CPI.TOTL.ZG?date=2018:2023&format=json&per_page=30,2026-07-13
+world_bank_cpi_growth,Japan,JPN,2021,-0.233352779398264,https://api.worldbank.org/v2/country/USA;CHN;JPN;DEU/indicator/FP.CPI.TOTL.ZG?date=2018:2023&format=json&per_page=30,2026-07-13
+world_bank_cpi_growth,Japan,JPN,2022,2.49770278172255,https://api.worldbank.org/v2/country/USA;CHN;JPN;DEU/indicator/FP.CPI.TOTL.ZG?date=2018:2023&format=json&per_page=30,2026-07-13
+world_bank_cpi_growth,Japan,JPN,2023,3.26813365933163,https://api.worldbank.org/v2/country/USA;CHN;JPN;DEU/indicator/FP.CPI.TOTL.ZG?date=2018:2023&format=json&per_page=30,2026-07-13
+world_bank_cpi_growth,China,CHN,2018,2.07479039965576,https://api.worldbank.org/v2/country/USA;CHN;JPN;DEU/indicator/FP.CPI.TOTL.ZG?date=2018:2023&format=json&per_page=30,2026-07-13
+world_bank_cpi_growth,China,CHN,2019,2.89923416358227,https://api.worldbank.org/v2/country/USA;CHN;JPN;DEU/indicator/FP.CPI.TOTL.ZG?date=2018:2023&format=json&per_page=30,2026-07-13
+world_bank_cpi_growth,China,CHN,2020,2.41942189457782,https://api.worldbank.org/v2/country/USA;CHN;JPN;DEU/indicator/FP.CPI.TOTL.ZG?date=2018:2023&format=json&per_page=30,2026-07-13
+world_bank_cpi_growth,China,CHN,2021,0.981015135544882,https://api.worldbank.org/v2/country/USA;CHN;JPN;DEU/indicator/FP.CPI.TOTL.ZG?date=2018:2023&format=json&per_page=30,2026-07-13
+world_bank_cpi_growth,China,CHN,2022,1.97357555739051,https://api.worldbank.org/v2/country/USA;CHN;JPN;DEU/indicator/FP.CPI.TOTL.ZG?date=2018:2023&format=json&per_page=30,2026-07-13
+world_bank_cpi_growth,China,CHN,2023,0.234836828893051,https://api.worldbank.org/v2/country/USA;CHN;JPN;DEU/indicator/FP.CPI.TOTL.ZG?date=2018:2023&format=json&per_page=30,2026-07-13

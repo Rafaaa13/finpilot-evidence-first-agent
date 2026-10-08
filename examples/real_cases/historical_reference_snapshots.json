@@ -1,0 +1,62 @@
+{
+  "schema_version": "historical-case-snapshot-v1",
+  "data_status": "public_reference_snapshot",
+  "warning": "These are selected historical reference points, not a complete market-data history, not real-time data, and not an investment signal.",
+  "cases": [
+    {
+      "case_id": "sp500_covid_2020",
+      "title": "2020 COVID-19 equity shock and recovery",
+      "asset": "S&P 500 index close",
+      "currency": "index_points",
+      "question": "What did a peak-to-trough shock, recovery path, and timing assumption do to a long-only equity portfolio?",
+      "observations": [
+        {"date": "2020-02-19", "value": 3386.15, "label": "pre-shock closing high"},
+        {"date": "2020-03-23", "value": 2237.40, "label": "pandemic low close"},
+        {"date": "2020-08-18", "value": 3389.78, "label": "recovery closing high"}
+      ],
+      "source_urls": [
+        "https://fred.stlouisfed.org/series/SP500",
+        "https://www.spglobal.com/spdji/en/commentary/article/us-equities-market-attributes-september-2021/",
+        "https://in.investing.com/news/update-1sp-500-record-close-relegates-covid19-selloff-to-history-books-2387226"
+      ],
+      "source_note": "FRED identifies the series as daily close sourced from S&P Dow Jones Indices LLC; the public reporting links corroborate the pandemic low/recovery context.",
+      "required_extension": "For a full backtest, provide authorized daily OHLCV and define dividends, fees, rebalancing, and execution timing."
+    },
+    {
+      "case_id": "sp500_rate_shock_2022",
+      "title": "2022 tightening cycle and equity drawdown",
+      "asset": "S&P 500 index close",
+      "currency": "index_points",
+      "question": "How should a research portfolio discuss a rate-led equity drawdown without treating a historical path as a forecast?",
+      "observations": [
+        {"date": "2022-01-03", "value": 4796.56, "label": "year opening / closing high reference"},
+        {"date": "2022-10-12", "value": 3577.03, "label": "closing low reference"},
+        {"date": "2022-12-30", "value": 3839.50, "label": "year-end close"}
+      ],
+      "source_urls": [
+        "https://www.investing.com/news/stock-market-news/sp-500-dow-hit-record-highs-on-1st-trading-day-of-2022-2728869",
+        "https://www.investing.com/news/economy/asian-stocks-stall-amid-global-volatility-2910001",
+        "https://www.investing.com/news/economy/futures-slip-on-last-trading-day-of-torrid-year-2971369"
+      ],
+      "source_note": "The cited public reports provide the displayed closing levels; this snapshot is intentionally sparse and cannot substitute for a complete historical series.",
+      "required_extension": "Add sector/factor exposures and a full dated series before making a portfolio attribution claim."
+    },
+    {
+      "case_id": "us10y_2022_yield_shift",
+      "title": "2022 US 10-year Treasury yield repricing",
+      "asset": "US Treasury 10-year par yield",
+      "currency": "percent",
+      "question": "How can a fixed-income analyst connect a yield shift to duration, convexity, and price sensitivity?",
+      "observations": [
+        {"date": "2022-01-03", "value": 1.63, "label": "10-year par yield"},
+        {"date": "2022-12-30", "value": 3.88, "label": "10-year par yield"}
+      ],
+      "source_urls": [
+        "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/TextView?field_tdr_date_value_month=202201&type=daily_treasury_yield_curve",
+        "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/TextView?field_tdr_date_value_month=202212&type=daily_treasury_yield_curve"
+      ],
+      "source_note": "US Treasury Daily Treasury Par Yield Curve Rates. The displayed change is 225 basis points, calculated from the two cited observations.",
+      "required_extension": "Pair the yield curve with a defined bond cash-flow portfolio and key-rate durations for an ALM analysis."
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "schema_version": "real-case-v1",
+  "case_id": "2022-tech-valuation-downturn",
+  "title": "2022 科技估值下行：增长、利润质量与估值敏感性",
+  "data_status": "user_snapshot_required",
+  "case_type": "实盘研究练习模板",
+  "historical_window": {
+    "start": "2022-01-03",
+    "end": "2022-12-30",
+    "as_of": "2022-12-30",
+    "date_semantics": "财务字段按 filed_at 点时可见性过滤；价格按实际日期交集计算；不要把后续修订当作当时可见信息"
+  },
+  "source_urls": [
+    "https://www.sec.gov/edgar/sec-api-documentation",
+    "https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm",
+    "https://www.nasdaq.com/market-activity/quotes"
+  ],
+  "questions": [
+    "在固定筛选阈值下，增长、利润率、FCF 和杠杆分别如何影响通过/排除？",
+    "PE 上限变化是否改变候选集合，还是利润质量/数据完整性才是主要门槛？",
+    "科技行业的单票上限、现金和相关性压力如何影响组合解释？"
+  ],
+  "required_csv_fields": {
+    "stocks_csv": ["symbol", "name", "sector", "currency", "price_as_of", "price", "eps_ttm", "revenue_growth", "operating_margin", "fcf_margin", "debt_to_equity", "period_end", "filed_at", "source"],
+    "prices_csv": ["date", "symbol", "adj_close"]
+  },
+  "reproduction": [
+    "至少为每个公司保存当时可用的报告期、披露日、价格日和来源定位；不能只录入今天回看的数值。",
+    "用 equal、score_weighted 和 vol_inverse 做规则敏感性对比，输出每个变化的原因和 evidence。",
+    "如 EPS/利润质量口径不一致，缺失或不适用应进入 review，不把缺失当零。",
+    "结果仅用于研究练习；不要将通过规则改写为买入、alpha 或未来收益。"
+  ],
+  "not_provided": ["精确行情数字", "科技股真实排名", "估值结论", "交易建议"]
+}

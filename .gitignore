@@ -6,6 +6,9 @@ __pycache__/
 .DS_Store
 *.log
 data/raw/
+# User/provider snapshots may have restricted licenses; keep outside version control.
+data/snapshots/
+data/fetched/
 *.sqlite3
 reports/demo/run_*.json
 reports/demo/research_memo_*.md

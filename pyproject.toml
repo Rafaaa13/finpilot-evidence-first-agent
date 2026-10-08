@@ -4,11 +4,15 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "finpilot"
-version = "0.2.0"
+version = "0.3.0"
 description = "Evidence-first financial research and risk cockpit"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = ["numpy>=1.24", "pandas>=2.0"]
+
+[project.optional-dependencies]
+# Opt-in only. Normal installation, demos and tests do not require yfinance.
+market-data = ["yfinance>=0.2.54,<1"]
 
 [project.scripts]
 finpilot = "finpilot.cli:main"

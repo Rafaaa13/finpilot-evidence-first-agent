@@ -1,0 +1,25 @@
+dataset_id,country,iso3,year,gdp_growth_pct,source_url,snapshot_updated
+world_bank_gdp_growth,United States,USA,2018,2.96650506701943,https://api.worldbank.org/v2/country/USA;CHN;JPN;DEU/indicator/NY.GDP.MKTP.KD.ZG?date=2018:2023&format=json&per_page=30,2026-07-13
+world_bank_gdp_growth,United States,USA,2019,2.58382533052225,https://api.worldbank.org/v2/country/USA;CHN;JPN;DEU/indicator/NY.GDP.MKTP.KD.ZG?date=2018:2023&format=json&per_page=30,2026-07-13
+world_bank_gdp_growth,United States,USA,2020,-2.081375977796,https://api.worldbank.org/v2/country/USA;CHN;JPN;DEU/indicator/NY.GDP.MKTP.KD.ZG?date=2018:2023&format=json&per_page=30,2026-07-13
+world_bank_gdp_growth,United States,USA,2021,6.15202247867526,https://api.worldbank.org/v2/country/USA;CHN;JPN;DEU/indicator/NY.GDP.MKTP.KD.ZG?date=2018:2023&format=json&per_page=30,2026-07-13
+world_bank_gdp_growth,United States,USA,2022,2.52421385073222,https://api.worldbank.org/v2/country/USA;CHN;JPN;DEU/indicator/NY.GDP.MKTP.KD.ZG?date=2018:2023&format=json&per_page=30,2026-07-13
+world_bank_gdp_growth,United States,USA,2023,2.93436322440155,https://api.worldbank.org/v2/country/USA;CHN;JPN;DEU/indicator/NY.GDP.MKTP.KD.ZG?date=2018:2023&format=json&per_page=30,2026-07-13
+world_bank_gdp_growth,China,CHN,2018,6.757806142324,https://api.worldbank.org/v2/country/USA;CHN;JPN;DEU/indicator/NY.GDP.MKTP.KD.ZG?date=2018:2023&format=json&per_page=30,2026-07-13
+world_bank_gdp_growth,China,CHN,2019,6.06737806333672,https://api.worldbank.org/v2/country/USA;CHN;JPN;DEU/indicator/NY.GDP.MKTP.KD.ZG?date=2018:2023&format=json&per_page=30,2026-07-13
+world_bank_gdp_growth,China,CHN,2020,2.33950385203023,https://api.worldbank.org/v2/country/USA;CHN;JPN;DEU/indicator/NY.GDP.MKTP.KD.ZG?date=2018:2023&format=json&per_page=30,2026-07-13
+world_bank_gdp_growth,China,CHN,2021,8.57038414981781,https://api.worldbank.org/v2/country/USA;CHN;JPN;DEU/indicator/NY.GDP.MKTP.KD.ZG?date=2018:2023&format=json&per_page=30,2026-07-13
+world_bank_gdp_growth,China,CHN,2022,3.13385438394069,https://api.worldbank.org/v2/country/USA;CHN;JPN;DEU/indicator/NY.GDP.MKTP.KD.ZG?date=2018:2023&format=json&per_page=30,2026-07-13
+world_bank_gdp_growth,China,CHN,2023,5.41600334492955,https://api.worldbank.org/v2/country/USA;CHN;JPN;DEU/indicator/NY.GDP.MKTP.KD.ZG?date=2018:2023&format=json&per_page=30,2026-07-13
+world_bank_gdp_growth,Japan,JPN,2018,0.834143845965585,https://api.worldbank.org/v2/country/USA;CHN;JPN;DEU/indicator/NY.GDP.MKTP.KD.ZG?date=2018:2023&format=json&per_page=30,2026-07-13
+world_bank_gdp_growth,Japan,JPN,2019,-0.308496921143259,https://api.worldbank.org/v2/country/USA;CHN;JPN;DEU/indicator/NY.GDP.MKTP.KD.ZG?date=2018:2023&format=json&per_page=30,2026-07-13
+world_bank_gdp_growth,Japan,JPN,2020,-4.28327942675573,https://api.worldbank.org/v2/country/USA;CHN;JPN;DEU/indicator/NY.GDP.MKTP.KD.ZG?date=2018:2023&format=json&per_page=30,2026-07-13
+world_bank_gdp_growth,Japan,JPN,2021,3.56419531474475,https://api.worldbank.org/v2/country/USA;CHN;JPN;DEU/indicator/NY.GDP.MKTP.KD.ZG?date=2018:2023&format=json&per_page=30,2026-07-13
+world_bank_gdp_growth,Japan,JPN,2022,1.33164750653741,https://api.worldbank.org/v2/country/USA;CHN;JPN;DEU/indicator/NY.GDP.MKTP.KD.ZG?date=2018:2023&format=json&per_page=30,2026-07-13
+world_bank_gdp_growth,Japan,JPN,2023,0.720785304749811,https://api.worldbank.org/v2/country/USA;CHN;JPN;DEU/indicator/NY.GDP.MKTP.KD.ZG?date=2018:2023&format=json&per_page=30,2026-07-13
+world_bank_gdp_growth,Germany,DEU,2018,1.13569604599849,https://api.worldbank.org/v2/country/USA;CHN;JPN;DEU/indicator/NY.GDP.MKTP.KD.ZG?date=2018:2023&format=json&per_page=30,2026-07-13
+world_bank_gdp_growth,Germany,DEU,2019,0.977734697038784,https://api.worldbank.org/v2/country/USA;CHN;JPN;DEU/indicator/NY.GDP.MKTP.KD.ZG?date=2018:2023&format=json&per_page=30,2026-07-13
+world_bank_gdp_growth,Germany,DEU,2020,-4.13191443239947,https://api.worldbank.org/v2/country/USA;CHN;JPN;DEU/indicator/NY.GDP.MKTP.KD.ZG?date=2018:2023&format=json&per_page=30,2026-07-13
+world_bank_gdp_growth,Germany,DEU,2021,3.90999994204108,https://api.worldbank.org/v2/country/USA;CHN;JPN;DEU/indicator/NY.GDP.MKTP.KD.ZG?date=2018:2023&format=json&per_page=30,2026-07-13
+world_bank_gdp_growth,Germany,DEU,2022,1.8092581243061,https://api.worldbank.org/v2/country/USA;CHN;JPN;DEU/indicator/NY.GDP.MKTP.KD.ZG?date=2018:2023&format=json&per_page=30,2026-07-13
+world_bank_gdp_growth,Germany,DEU,2023,-0.869647578573321,https://api.worldbank.org/v2/country/USA;CHN;JPN;DEU/indicator/NY.GDP.MKTP.KD.ZG?date=2018:2023&format=json&per_page=30,2026-07-13

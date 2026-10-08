@@ -2,6 +2,10 @@
 
 The offline pipeline does not call external models or provider servers. `integrations.py` contains optional adapter primitives only. No SEC/Yahoo MCP or live model has been connected, installed or benchmarked in this delivery.
 
+## Explicit data providers
+
+`data_sources.py` now provides offline `data doctor`, local `UserSnapshotProvider`, lazy opt-in `YFinanceProvider`, and a bounded raw-companyfacts `SecEdgarProvider` wrapper. It does not invoke the legacy cached `_get_json`, guess ticker mappings, derive accounting ratios, or silently fall back to synthetic data. Both network and terms consent are required; SEC additionally requires explicit CIK and real contact user-agent. The adapters have injected mock tests only: no live provider was called or installed for this implementation. Fetch results remain `verified=false`. See [data-sources.md](data-sources.md).
+
 ## Local MCP
 
 Start from `config/mcp.example.json`. Review the chosen server source, license, data terms, endpoint privacy, credentials and tool schema before filling an explicit command list. Never paste a shell pipeline into the command field. Discover the server's actual tool names with `tools/list`, then allowlist only approved read-only tools. FinPilot must not infer tool names from marketing descriptions.
