@@ -171,6 +171,7 @@ python -m finpilot export --output /tmp/FinPilot演示工作台.html
 
 ## 参考文档
 
+- [`docs/USER_GUIDE.md`](docs/USER_GUIDE.md)：完整中文使用教程（新手、专业、数据导入、案例、LLM、provider）
 - [`docs/product-v03.md`](docs/product-v03.md)：产品定位、使用场景、快速上手和功能边界
 - [`docs/data-contract.md`](docs/data-contract.md)：CSV 字段、点时规则、缺失与来源标签
 - [`docs/data-sources.md`](docs/data-sources.md)：离线 doctor、显式 fetch、provider 输出合同与复现边界

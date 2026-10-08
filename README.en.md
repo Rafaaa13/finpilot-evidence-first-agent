@@ -81,7 +81,8 @@ Use STAR: the situation was that research tools mix retrieval, arithmetic, portf
 
 Implemented and locally tested: synthetic investment research, CSV validation, portfolio cap/cash, common-date stress, credit stress, fixed-income/options calculations, bounded MCP/LLM schemas, evidence, localhost server, and standalone workbench. The test suite is an offline engineering check, not a user study or model benchmark. Optional yfinance/SEC adapters are covered by injected offline mocks, not live integration tests. Accounting restatements, corporate actions, liquidity, transaction-cost backtesting, external users, source licensing, and commercial deployment require separate work.
 
-See [`docs/product-v03.md`](docs/product-v03.md), [`docs/data-contract.md`](docs/data-contract.md), [`docs/architecture.md`](docs/architecture.md), [`docs/interview-playbook.md`](docs/interview-playbook.md), [`docs/interview-v03.md`](docs/interview-v03.md), [`docs/capability-map.md`](docs/capability-map.md), [`docs/resume.md`](docs/resume.md), [`docs/integrations.md`](docs/integrations.md), [`docs/advisor.md`](docs/advisor.md), and [`docs/model-card.md`](docs/model-card.md).
+- [`docs/USER_GUIDE.md`](docs/USER_GUIDE.md): detailed Chinese user guide for novice/pro workflows, cases, imports, providers, and LLM
+- [`docs/product-v03.md`](docs/product-v03.md): product scope, user scenarios, quick start, and boundaries
 
 ## Safety
 
